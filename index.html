@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -41,9 +41,9 @@ body{
   font-size:15px;line-height:1.5;
   -webkit-font-smoothing:antialiased;
   background-image:
-    linear-gradient(var(--grid) 1px,transparent 1px),
-    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-  background-size:44px 44px;
+    radial-gradient(120% 80% at 50% -8%, color-mix(in srgb, var(--gold) 9%, transparent) 0%, transparent 52%),
+    radial-gradient(90% 60% at 100% 100%, color-mix(in srgb, var(--gold) 5%, transparent) 0%, transparent 55%);
+  background-attachment:fixed;
   min-height:100vh;
   transition:background-color .5s ease,color .5s ease;
 }
@@ -51,9 +51,36 @@ body{
 .wrap{max-width:1340px;margin:0 auto;padding:0 28px 80px}
 
 /* ---------------- HEADER ---------------- */
-header{padding:38px 0 26px;border-bottom:1px solid var(--rule);position:relative}
-.kicker{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.34em;
+header{padding:38px 0 14px;position:relative}
+/* Greek-key (meander) divider — classical nod to HERCULEAN */
+.meander{height:18px;margin:4px 0;opacity:.5;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='18'%3E%3Cg fill='none' stroke='%23b8ab92' stroke-width='1.5'%3E%3Cpath d='M0 16H30'/%3E%3Cpath d='M7 16V5H23V13H13V9'/%3E%3C/g%3E%3C/svg%3E") repeat-x left center}
+
+/* Sisyphus — a little pixel figure forever pushing a boulder across the divider */
+.scene{position:relative;height:30px;margin:2px 0 5px;overflow:hidden}
+.scene::after{content:'';position:absolute;left:0;right:0;bottom:6px;height:1px;
+  background:repeating-linear-gradient(90deg, color-mix(in srgb, var(--ink-soft) 30%, transparent) 0 10px, transparent 10px 14px);
+  animation:ground 2s linear infinite}
+.scene.rev::after{animation:groundrev 2s linear infinite}
+.scene:hover .sisyphus,.scene:hover::after{animation-play-state:paused}
+.sisyphus{position:absolute;bottom:6px;left:-7%;color:var(--ink-soft);opacity:.85;
+  animation:walk 18s linear infinite;will-change:left}
+.scene.rev .sisyphus{transform:scaleX(-1);animation:walkrev 18s linear infinite}
+.px{display:block;image-rendering:pixelated;overflow:visible}
+.dudeScale{transform-box:fill-box;transform-origin:bottom center;transform:scale(1.2)}
+.dude{transform-box:fill-box;transform-origin:bottom center;animation:bob .84s steps(2) alternate infinite}
+.rock{transform-box:fill-box;transform-origin:center;animation:roll 2.1s linear infinite}
+@keyframes walk{from{left:-7%}to{left:105%}}
+@keyframes walkrev{from{left:105%}to{left:-7%}}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-2px)}}
+@keyframes roll{to{transform:rotate(360deg)}}
+@keyframes ground{from{background-position-x:0}to{background-position-x:-14px}}
+@keyframes groundrev{from{background-position-x:0}to{background-position-x:14px}}
+@media(prefers-reduced-motion:reduce){.sisyphus,.dude,.rock,.scene::after{animation:none}}
+.kicker{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.34em;
   text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.kicker .affil{color:var(--muted);letter-spacing:.2em}
 .title-row{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap}
 h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(48px,8vw,104px);
   line-height:.86;letter-spacing:-.02em;font-optical-sizing:auto}
@@ -73,16 +100,6 @@ h1 .dot{color:var(--gold)}
   background:none;border:none;color:var(--muted);cursor:pointer;padding:5px 13px;border-radius:999px;
   text-transform:uppercase;transition:.2s}
 .theme-toggle button.on{background:var(--gold);color:var(--bg)}
-
-/* ---------------- TAKEAWAYS ---------------- */
-.takeaways{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0 14px}
-.tk{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:17px 18px;
-  position:relative;overflow:hidden}
-.tk::before{content:attr(data-rq);position:absolute;top:9px;right:13px;
-  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.2em;color:var(--faint)}
-.tk h3{font-family:"Fraunces",serif;font-weight:600;font-size:16px;margin-bottom:7px;color:var(--gold);line-height:1.15}
-.tk p{font-size:13px;color:var(--ink-soft);line-height:1.46}
-.tk b{color:var(--ink);font-weight:600}
 
 /* ---------------- MAIN GRID ---------------- */
 .cols{display:grid;grid-template-columns:minmax(420px,0.92fr) 1.4fr;gap:26px;margin-top:26px;align-items:start}
@@ -146,14 +163,27 @@ h1 .dot{color:var(--gold)}
 .chip{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;padding:1px 6px;
   border:1px solid var(--line-2);border-radius:4px;margin:0 4px 4px 0;color:var(--ink-soft);white-space:nowrap}
 .chip.skill{color:var(--gold);border-color:var(--gold)}
-/* collapsible rankings */
-.wp-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.2,.8,.2,1)}
-.wp.open .wp-body{max-height:840px}
-.bars-cap{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--muted);margin-top:15px;padding-top:14px;border-top:1px solid var(--line);margin-bottom:10px}
+/* rankings: top agent always shown, the rest expandable */
+.bars-cap{display:flex;align-items:baseline;gap:8px;font-family:"IBM Plex Mono",monospace;font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:15px;padding-top:14px;
+  border-top:1px solid var(--line);margin-bottom:10px}
+.bars-cap .lead{color:var(--gold)}
+.bars-rest{max-height:0;overflow:hidden;transition:max-height .55s cubic-bezier(.2,.8,.2,1)}
+.wp.open .bars-rest{max-height:820px}
+.bars-rest .bars{margin-top:5px}
+.show-more{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:12px;
+  background:none;border:1px dashed var(--line-2);border-radius:5px;padding:8px;cursor:pointer;
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);transition:color .2s,border-color .2s}
+.show-more:hover{color:var(--gold);border-color:var(--gold)}
+.show-more .m2{display:none}
+.wp.open .show-more .m1{display:none}
+.wp.open .show-more .m2{display:inline}
+.show-more .chev2{font-size:9px;transition:transform .3s}
+.wp.open .show-more .chev2{transform:rotate(180deg)}
 .bars{display:flex;flex-direction:column;gap:5px}
-.bar{display:grid;grid-template-columns:112px 1fr auto;align-items:center;gap:10px;position:relative;
-  cursor:default;border-radius:3px;padding:2px 4px 2px 5px;transition:opacity .2s,background .2s,transform .2s}
+.bar{display:grid;grid-template-columns:112px 1fr 50px;align-items:center;gap:10px;position:relative;
+  cursor:default;border-radius:3px;padding:2px 0;transition:opacity .2s,background .2s,transform .2s}
 .bar .who{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px}
 .bar .who .ag{color:var(--muted)}
@@ -169,6 +199,12 @@ h1 .dot{color:var(--gold)}
 .bar .tk-bar{height:14px;background:var(--bar-track);border:1px solid var(--line-2);border-radius:3px;overflow:hidden;position:relative}
 .bar .tk-bar i{display:block;height:100%;border-radius:2px;opacity:0;transform:scaleX(0);transform-origin:left center}
 .bar .tk-bar i.play{animation:fillrise 1.5s cubic-bezier(.16,.84,.28,1) both}
+/* Buy & Hold marker — a short neutral tick inside each Trading bar (bar-height, unobtrusive) */
+.tk-bar .bl-tick{position:absolute;top:0;bottom:0;width:1.5px;transform:translateX(-.75px);
+  background:var(--ink-soft);opacity:.55;z-index:2;border-radius:1px}
+.bl-key{color:var(--muted)}
+.bl-key::before{content:'';display:inline-block;width:1.5px;height:10px;background:var(--ink-soft);
+  opacity:.6;margin-right:6px;vertical-align:-1px;border-radius:1px}
 .bvals{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;min-width:48px;line-height:1.15}
 .bvals .bval{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft)}
 .bvals .brank{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--faint)}
@@ -189,7 +225,7 @@ h1 .dot{color:var(--gold)}
 .legend .it{display:flex;align-items:center;gap:7px}
 .legend .sw{width:11px;height:11px;border-radius:3px}
 .legend .sw.failsw{background:repeating-linear-gradient(45deg,var(--bar-track),var(--bar-track) 3px,var(--fail) 3px,var(--fail) 6px)}
-footer{margin-top:46px;padding-top:22px;border-top:1px solid var(--rule);
+footer{margin-top:18px;padding-top:6px;
   font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);line-height:1.7}
 footer b{color:var(--ink-soft);font-weight:500}
 
@@ -219,39 +255,63 @@ footer b{color:var(--ink-soft);font-weight:500}
 
 @media(max-width:1080px){
   .cols{grid-template-columns:1fr}
-  .takeaways{grid-template-columns:1fr 1fr}
   .panels{grid-template-columns:1fr}
   .subtitle{text-align:left}
 }
-@media(max-width:600px){.takeaways{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header>
-    <div class="kicker">NeurIPS 2026 &nbsp;·&nbsp; Financial Agent Benchmark</div>
+    <div class="kicker"><span>Financial Agentic Benchmark</span><span class="affil">The Fin AI · NaCTeM · DeepKin</span></div>
     <div class="title-row">
       <h1>Herculean<span class="dot">.</span></h1>
       <div class="subtitle">An agentic benchmark for financial intelligence — Trading, Hedging, Market Insights &amp; Auditing.</div>
     </div>
     <div class="meta-bar">
-      <span class="tag">v1.0</span>
+      <span class="tag">v1.4</span>
       <span>·</span>
       <span>5 agents × 4 backbones × 4 workflows</span>
       <span>·</span>
       <span>Updated <span class="num">2026-05-27</span></span>
       <span class="spacer"></span>
+      <a href="https://arxiv.org/abs/2605.14355" target="_blank" rel="noopener">Paper ↗</a>
       <a href="https://github.com/xueqingpeng/trading-analysis" target="_blank" rel="noopener">Code ↗</a>
       <a href="https://huggingface.co/datasets/TheFinAI/Herculean" target="_blank" rel="noopener">Data ↗</a>
       <div class="theme-toggle" id="themeToggle">
-        <button data-t="dark" class="on">Dark</button>
-        <button data-t="light">Light</button>
+        <button data-t="light" class="on">Light</button>
+        <button data-t="dark">Dark</button>
       </div>
     </div>
   </header>
 
-  <section class="takeaways" id="takeaways"></section>
+  <div class="scene" title="Sisyphus — the eternal push">
+    <span class="sisyphus">
+      <svg class="px" viewBox="0 0 48 20" width="48" height="20" aria-hidden="true">
+        <g class="dudeScale"><g class="dude" fill="currentColor">
+          <rect x="13" y="3" width="4" height="4"/>
+          <rect x="11" y="7" width="5" height="2"/>
+          <rect x="10" y="9" width="5" height="2"/>
+          <rect x="9" y="11" width="5" height="2"/>
+          <rect x="16" y="8" width="9" height="2"/>
+          <rect x="13" y="13" width="2" height="6"/>
+          <rect x="13" y="19" width="4" height="1"/>
+          <rect x="9" y="13" width="2" height="3"/>
+          <rect x="7" y="16" width="2" height="3"/>
+          <rect x="5" y="19" width="3" height="1"/>
+        </g></g>
+        <g class="rock" fill="currentColor">
+          <rect x="30" y="0" width="12" height="3"/>
+          <rect x="28" y="3" width="16" height="14"/>
+          <rect x="26" y="6" width="2" height="8"/>
+          <rect x="44" y="6" width="2" height="8"/>
+          <rect x="30" y="17" width="12" height="3"/>
+          <rect x="32" y="7" width="5" height="5" fill="var(--panel)"/>
+        </g>
+      </svg>
+    </span>
+  </div>
 
   <div class="cols">
     <!-- LEFT -->
@@ -284,10 +344,37 @@ footer b{color:var(--ink-soft);font-weight:500}
     </div>
   </div>
 
+  <div class="scene rev" title="Sisyphus — the eternal push">
+    <span class="sisyphus">
+      <svg class="px" viewBox="0 0 48 20" width="48" height="20" aria-hidden="true">
+        <g class="dudeScale"><g class="dude" fill="currentColor">
+          <rect x="13" y="3" width="4" height="4"/>
+          <rect x="11" y="7" width="5" height="2"/>
+          <rect x="10" y="9" width="5" height="2"/>
+          <rect x="9" y="11" width="5" height="2"/>
+          <rect x="16" y="8" width="9" height="2"/>
+          <rect x="13" y="13" width="2" height="6"/>
+          <rect x="13" y="19" width="4" height="1"/>
+          <rect x="9" y="13" width="2" height="3"/>
+          <rect x="7" y="16" width="2" height="3"/>
+          <rect x="5" y="19" width="3" height="1"/>
+        </g></g>
+        <g class="rock" fill="currentColor">
+          <rect x="30" y="0" width="12" height="3"/>
+          <rect x="28" y="3" width="16" height="14"/>
+          <rect x="26" y="6" width="2" height="8"/>
+          <rect x="44" y="6" width="2" height="8"/>
+          <rect x="30" y="17" width="12" height="3"/>
+          <rect x="32" y="7" width="5" height="5" fill="var(--panel)"/>
+        </g>
+      </svg>
+    </span>
+  </div>
+
   <footer>
     <b>HERCULEAN</b> · five agent frameworks (ReAct, Claude Code, Codex, Hermes, OpenClaw) on four backbones
     (Sonnet 4.6, GPT-5.4, Qwen3.5-397B, Qwen3.5-27B), evaluated across four MCP-grounded financial workflows.
-    Buy &amp; Hold baseline shown for reference in tooltips. Figures transcribed from Table 2.<br>
+    Buy &amp; Hold baseline shown for reference in tooltips.<br>
     Composite scores are a leaderboard convenience (relative min–max within this table), not defined in the paper.
   </footer>
 </div>
@@ -1447,46 +1534,41 @@ const AGENT_ABBR = {'ReAct Agent':'ReAct','Claude Code':'ClaudeC','Codex':'Codex
 const chips = arr => arr.map(s=>`<span class="chip">${s}</span>`).join('');
 const WF_INFO = {
  Trading:{
-   desc:'Sequential daily market-timing for a single stock over a three-month horizon — turn noisy price, news and filing signals into an executable decision each day, with strict no-lookahead constraints.',
+   desc:'Daily market-timing for one stock — turn price, news and filing signals into a decision each day, no lookahead.',
    facts:[
      ['Skill','<span class="chip skill">trading_mcp</span>'],
      ['Actions',chips(['BUY','SELL','HOLD'])],
      ['Symbols',chips(['MSFT','TSLA','AAPL','NVDA'])],
-     ['Market','Daily-stepped offline DuckDB · 3-mo eval window (+ live regime Apr–May 2026)'],
-     ['Data','Yahoo Finance prices &amp; news · SEC EDGAR 10-K / 10-Q filings'],
-     ['Scored by','Cumulative return · Sharpe · Max drawdown — vs. Buy &amp; Hold baseline'],
+     ['Data','Prices · News · SEC EDGAR 10-K / 10-Q filings'],
+     ['Scored by','Cumulative return · Sharpe · Max drawdown — vs. Buy &amp; Hold'],
    ],
  },
  Hedging:{
-   desc:'Market-neutral pair trading: choose one ordered pair from an eight-stock universe, then manage a dollar-neutral long/short position day by day, betting on convergence rather than direction.',
+   desc:'Market-neutral pair trading — pick one pair, then manage a dollar-neutral long/short position day by day.',
    facts:[
      ['Skill','<span class="chip skill">hedging_mcp</span>'],
      ['Actions',chips(['LONG_SHORT','SHORT_LONG','HOLD','CLOSE'])],
      ['Universe',chips(['AAPL','ADBE','AMZN','GOOGL','META','MSFT','NVDA','TSLA'])],
-     ['Market','Dollar-neutral pairs environment · DuckDB · 3-mo eval'],
-     ['Data','Yahoo Finance · SEC EDGAR filings'],
+     ['Data','Prices · News · SEC EDGAR 10-K / 10-Q filings'],
      ['Scored by','Selected pair · Cumulative return · Sharpe · Max drawdown'],
    ],
  },
  'Market Insights':{
-   desc:'Analyst-style alpha discovery: synthesise prices, news and filings into a structured eight-section weekly investment report plus a graduated rating that must hold up to professional scrutiny.',
+   desc:'Alpha discovery — synthesise prices, news and filings into a structured weekly report plus a rating.',
    facts:[
      ['Skill','<span class="chip skill">market_insights_mcp</span>'],
-     ['Output','8-section Markdown report + rating '+chips(['STRONG_BUY … STRONG_SELL'])],
+     ['Output','8-section report + rating '+chips(['STRONG_BUY … STRONG_SELL'])],
      ['Symbols',chips(['MSFT','TSLA','AAPL','NVDA'])],
-     ['Cadence','Weekly · ~13 reports per asset · 3-mo eval'],
-     ['Data','Yahoo Finance · SEC EDGAR · 16 deterministic weekly metrics + peer map'],
-     ['Scored by','Rubric 0–10 (LLM judge over 4 dimensions) + simulated CR / SR / MDD'],
+     ['Data','Prices · News · SEC EDGAR 10-K / 10-Q filings'],
+     ['Scored by','Rubric 0–10 (over 4 dimensions) + simulated CR / SR / MDD'],
    ],
  },
  Auditing:{
-   desc:'Financial supervision under deterministic constraints: verify individual XBRL numeric facts in SEC-style filings against the US-GAAP taxonomy, reasoning over the calculation network to locate and correct reporting errors.',
+   desc:'Financial supervision — verify XBRL facts in SEC filings against the US-GAAP taxonomy to catch reporting errors.',
    facts:[
      ['Skill','<span class="chip skill">auditing_mcp</span>'],
      ['Output','Reported value vs. computed correct value, per fact'],
-     ['Corpus','65 static audit instances · multiple filers, fiscal periods &amp; concept types'],
-     ['Inputs','6 interconnected XBRL documents + US-GAAP taxonomy'],
-     ['Data','SEC EDGAR XBRL filings (FinAuditing lineage)'],
+     ['Data','SEC EDGAR XBRL filings — 6 linked documents + US-GAAP taxonomy'],
      ['Scored by','Accuracy + structural / extraction / calculation error rates (sum to 1)'],
    ],
  },
@@ -1515,16 +1597,6 @@ WF.forEach(w=>{
   wfRank[w]={}; order.forEach((idx,i)=>wfRank[w][idx]=i+1);
 });
 
-/* ---------- takeaways ---------- */
-const TK=[
- {rq:'RQ1',h:'Still not reliable',p:'No agent–backbone pair dominates. Many failures are <b>execution-level</b>, not reasoning — Codex+qwen27 fails to complete Trading & Market Insights entirely.'},
- {rq:'RQ2',h:'Capability is workflow-bound',p:'Narrative synthesis (<b>Market Insights</b>) is comparatively easy; <b>Hedging</b> & <b>Auditing</b> — needing state, relational reasoning & verification — stay hard.'},
- {rq:'RQ3',h:'Framework > backbone',p:'Same backbone, different behaviour. In Auditing, CLI-style frameworks reach <b>66% accuracy</b> while ReAct/Hermes stall near 20% from broken trajectories.'},
- {rq:'RQ4',h:'Scale ≠ competence',p:'Frontier backbones help but don’t guarantee robust workflow competence; fluent financial narrative does <b>not</b> transfer to deterministic verification.'},
-];
-document.getElementById('takeaways').innerHTML = TK.map((t,i)=>
- `<div class="tk rv" data-rq="${t.rq}" style="animation-delay:${i*70}ms"><h3>${t.h}</h3><p>${t.p}</p></div>`).join('');
-
 /* ---------- left ranking ---------- */
 const maxTotal = Math.max(...DATA.scores.agent_ranking.map(a=>a.total));
 const rankEl = document.getElementById('rank');
@@ -1534,7 +1606,7 @@ DATA.scores.agent_ranking.forEach((a,i)=>{
   const spark = WF.map(w=>`<i style="width:${10+ (wf[w]/100)*34}px;opacity:${.35+ (wf[w]/sparkMax)*.6}"></i>`).join('');
   const mini = WF.map(w=>`<span>${w==='Market Insights'?'Insight':w} <b class="num">${wf[w].toFixed(0)}</b></span>`).join('');
   const div=document.createElement('div');
-  div.className='agent rv';div.style.animationDelay=(300+i*80)+'ms';
+  div.className='agent rv'+(i===0?' open':'');div.style.animationDelay=(300+i*80)+'ms';
   div.dataset.agent=a.agent;
   div.innerHTML=`
     <div class="agent-top">
@@ -1572,12 +1644,26 @@ DATA.scores.agent_ranking.forEach((a,i)=>{
 
 /* ---------- right panels ---------- */
 const panelsEl=document.getElementById('panels');
-// shared ordering: follow the left leaderboard (agent ranking order × table model order)
-const leftOrder = DATA.scores.agent_ranking.flatMap(a=>DATA.meta.models.map(m=>cfgIndex(a.agent,m)));
+const topAgent = DATA.scores.agent_ranking[0].agent;
+const primaryIdx = DATA.meta.models.map(m=>cfgIndex(topAgent,m));
+const restIdx = DATA.scores.agent_ranking.slice(1).flatMap(a=>DATA.meta.models.map(m=>cfgIndex(a.agent,m)));
+
+// Buy & Hold position on the Trading 0–100 scale: normalise each asset's B&H Sharpe
+// with the same per-asset min/max used for the agent configs, then average over assets.
+function normPos(x, values){
+  const present=values.filter(v=>v!=null);
+  const lo=Math.min(...present), hi=Math.max(...present);
+  return hi===lo ? 100 : 10 + 90*(x-lo)/(hi-lo);
+}
+const tradingBH = ['MSFT','TSLA','AAPL','NVDA']
+  .reduce((s,a)=>s+normPos(DATA.raw.trading[a].BL.SR, DATA.raw.trading[a].SR),0)/4;
+
 WF.forEach((w,wi)=>{
   const sc=DATA.scores.workflow[w];
   const maxv=Math.max(...sc);
-  const rows=leftOrder.map(idx=>{
+  const blPct = Math.min(tradingBH/maxv*100,100);
+  const tick = (w==='Trading') ? `<span class="bl-tick" style="left:${blPct}%"></span>` : '';
+  const makeBar = idx => {
     const c=DATA.configs[idx];const f=FAM[c.model];const v=sc[idx];
     const failed = isFailed(w,idx);
     const width=(v/maxv)*100;
@@ -1585,29 +1671,32 @@ WF.forEach((w,wi)=>{
     const medal = (!failed && r<=3) ? ` t${r}` : '';
     return `<div class="bar ${failed?'failed':''}${medal}" data-cfg="${idx}" data-wf="${wi}">
       <span class="who"><span class="blogo">${LOGOS[c.agent]||''}</span><span class="ag">${AGENT_ABBR[c.agent]}</span> ${MODEL_LABEL[c.model]}</span>
-      <span class="tk-bar"><i class="fam-${f.key}" style="width:${width}%"></i></span>
+      <span class="tk-bar"><i class="fam-${f.key}" style="width:${width}%"></i>${tick}</span>
       <span class="bvals"><span class="bval num">${failed?'—':v.toFixed(0)}</span><span class="brank num">#${r}</span></span>
     </div>`;
-  }).join('');
+  };
+  const primary = primaryIdx.map(makeBar).join('');
+  const rest = restIdx.map(makeBar).join('');
   const div=document.createElement('div');
   div.className='wp rv';div.style.animationDelay=(380+wi*90)+'ms';
   const info=WF_INFO[w];
   const facts=info.facts.map(f=>`<div class="f"><span class="k">${f[0]}</span><span class="v">${f[1]}</span></div>`).join('');
   div.innerHTML=`<div class="wp-h"><span class="name">${w}</span><span class="metric">${WF_METRIC[w]}</span><span class="chev">▶</span></div>
     <div class="wp-meta"><div class="desc">${info.desc}</div><div class="wp-facts">${facts}</div></div>
-    <div class="wp-body"><div class="bars-cap">Per-model leaderboard · normalised 0–100</div><div class="bars" id="bars-${wi}">${rows}</div></div>`;
+    <div class="bars-cap">Leaderboard · normalised 0–100${w==='Trading'?' · <span class="bl-key">Buy &amp; Hold</span>':''}</div>
+    <div class="bars bars-primary">${primary}</div>
+    <div class="bars-rest"><div class="bars">${rest}</div></div>
+    <button class="show-more"><span class="m1">Show all 5 agents</span><span class="m2">Show leader only</span><span class="chev2">▾</span></button>`;
   panelsEl.appendChild(div);
-  div.querySelector('.wp-h').addEventListener('click',()=>{
-    div.classList.toggle('open');
-    if(div.classList.contains('open')) fillBars(div);
-  });
+  const toggle=()=>{div.classList.toggle('open'); if(div.classList.contains('open')) playBars(div.querySelectorAll('.bars-rest .tk-bar i'));};
+  div.querySelector('.wp-h').addEventListener('click',toggle);
+  div.querySelector('.show-more').addEventListener('click',e=>{e.stopPropagation();toggle();});
 });
 
-// (re)play the "grow from nothing" fill animation for a panel's bars, staggered top-to-bottom
-function fillBars(el){
-  const bars=el.querySelectorAll('.tk-bar i');
+// (re)play the "grow from nothing" fill animation for a set of bar fills, staggered top-to-bottom
+function playBars(bars){
   bars.forEach(i=>{i.classList.remove('play');i.style.animationDelay='';});
-  void el.offsetWidth; // force reflow so removing .play resets the animation before replay
+  void document.body.offsetWidth; // force reflow so removing .play resets the animation before replay
   bars.forEach((i,k)=>{i.style.animationDelay=(k*55)+'ms';i.classList.add('play');});
 }
 
@@ -1697,6 +1786,7 @@ tt.addEventListener('click',e=>{
 /* ---------- animate bar widths after paint ---------- */
 requestAnimationFrame(()=>requestAnimationFrame(()=>{
   document.querySelectorAll('.fill,[data-w]').forEach(el=>{el.style.width=el.dataset.w+'%';el.classList.add('on');});
+  document.querySelectorAll('.wp').forEach(p=>playBars(p.querySelectorAll('.bars-primary .tk-bar i')));
 }));
 </script>
 </body>
