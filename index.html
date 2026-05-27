@@ -1536,7 +1536,7 @@ const WF_INFO = {
  Trading:{
    desc:'Daily market-timing for one stock — turn price, news and filing signals into a decision each day, no lookahead.',
    facts:[
-     ['Skill','<span class="chip skill">trading_mcp</span>'],
+     ['Task','<span class="chip skill">trading_skill</span><span class="chip">trading_mcp</span>'],
      ['Actions',chips(['BUY','SELL','HOLD'])],
      ['Symbols',chips(['MSFT','TSLA','AAPL','NVDA'])],
      ['Data','Prices · News · SEC EDGAR 10-K / 10-Q filings'],
@@ -1546,7 +1546,7 @@ const WF_INFO = {
  Hedging:{
    desc:'Market-neutral pair trading — pick one pair, then manage a dollar-neutral long/short position day by day.',
    facts:[
-     ['Skill','<span class="chip skill">hedging_mcp</span>'],
+     ['Task','<span class="chip skill">hedging_skill</span><span class="chip">hedging_mcp</span>'],
      ['Actions',chips(['LONG_SHORT','SHORT_LONG','HOLD','CLOSE'])],
      ['Universe',chips(['AAPL','ADBE','AMZN','GOOGL','META','MSFT','NVDA','TSLA'])],
      ['Data','Prices · News · SEC EDGAR 10-K / 10-Q filings'],
@@ -1556,7 +1556,7 @@ const WF_INFO = {
  'Market Insights':{
    desc:'Alpha discovery — synthesise prices, news and filings into a structured weekly report plus a rating.',
    facts:[
-     ['Skill','<span class="chip skill">market_insights_mcp</span>'],
+     ['Task','<span class="chip skill">market_insights_skill</span><span class="chip">market_insights_mcp</span>'],
      ['Output','8-section report + rating '+chips(['STRONG_BUY … STRONG_SELL'])],
      ['Symbols',chips(['MSFT','TSLA','AAPL','NVDA'])],
      ['Data','Prices · News · SEC EDGAR 10-K / 10-Q filings'],
@@ -1566,7 +1566,7 @@ const WF_INFO = {
  Auditing:{
    desc:'Financial supervision — verify XBRL facts in SEC filings against the US-GAAP taxonomy to catch reporting errors.',
    facts:[
-     ['Skill','<span class="chip skill">auditing_mcp</span>'],
+     ['Task','<span class="chip skill">auditing_skill</span><span class="chip">auditing_mcp</span>'],
      ['Output','Reported value vs. computed correct value, per fact'],
      ['Data','SEC EDGAR XBRL filings — 6 linked documents + US-GAAP taxonomy'],
      ['Scored by','Accuracy + structural / extraction / calculation error rates (sum to 1)'],
@@ -1683,7 +1683,7 @@ WF.forEach((w,wi)=>{
   const facts=info.facts.map(f=>`<div class="f"><span class="k">${f[0]}</span><span class="v">${f[1]}</span></div>`).join('');
   div.innerHTML=`<div class="wp-h"><span class="name">${w}</span><span class="metric">${WF_METRIC[w]}</span><span class="chev">▶</span></div>
     <div class="wp-meta"><div class="desc">${info.desc}</div><div class="wp-facts">${facts}</div></div>
-    <div class="bars-cap">Leaderboard · normalised 0–100${w==='Trading'?' · <span class="bl-key">Buy &amp; Hold</span>':''}</div>
+    <div class="bars-cap">normalised 0–100${w==='Trading'?' · <span class="bl-key">Buy &amp; Hold</span>':''}</div>
     <div class="bars bars-primary">${primary}</div>
     <div class="bars-rest"><div class="bars">${rest}</div></div>
     <button class="show-more"><span class="m1">Show all 5 agents</span><span class="m2">Show leader only</span><span class="chev2">▾</span></button>`;
