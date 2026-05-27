@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HERCULEAN — Agentic Benchmark for Financial Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --anthropic:#E0A040; --anthropic-2:#caa86a;
+  --openai:#37C9A6;
+  --qwen:#9A78EA; --qwen-2:#CABAF5;
+}
+html[data-theme="dark"]{
+  --bg:#13110D; --bg-2:#1A1712; --panel:#1C1813; --panel-2:#211C16;
+  --ink:#EEE7D9; --ink-soft:#C8BEAC; --muted:#8C8270; --faint:#5E574A;
+  --line:#2C2820; --line-2:#37322A;
+  --gold:#D8AE5E; --rule:#3A342A;
+  --grid:rgba(216,174,94,.045);
+  --bar-track:#262119; --shadow:0 18px 50px -22px rgba(0,0,0,.85);
+  --fail:#4A4339;
+}
+html[data-theme="light"]{
+  --bg:#EFE8D9; --bg-2:#F4EEE1; --panel:#FBF7EC; --panel-2:#F6F0E2;
+  --ink:#2A241A; --ink-soft:#4A4234; --muted:#7C7260; --faint:#A89B83;
+  --line:#E0D6C2; --line-2:#D3C7AE;
+  --gold:#A9762A; --rule:#D8CDB7;
+  --grid:rgba(120,90,30,.05);
+  --bar-track:#E6DDC9; --shadow:0 18px 50px -28px rgba(80,60,20,.35);
+  --fail:#BCB099;
+  --anthropic:#C07E1C; --openai:#159E80; --qwen:#7C5BD6; --qwen-2:#A78FE2; --anthropic-2:#9d7a35;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",sans-serif;
+  font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:44px 44px;
+  min-height:100vh;
+  transition:background-color .5s ease,color .5s ease;
+}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1340px;margin:0 auto;padding:0 28px 80px}
+
+/* ---------------- HEADER ---------------- */
+header{padding:38px 0 26px;border-bottom:1px solid var(--rule);position:relative}
+.kicker{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.title-row{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(48px,8vw,104px);
+  line-height:.86;letter-spacing:-.02em;font-optical-sizing:auto}
+h1 .dot{color:var(--gold)}
+.subtitle{font-family:"Fraunces",serif;font-style:italic;font-weight:400;
+  font-size:clamp(16px,2.2vw,23px);color:var(--ink-soft);max-width:430px;text-align:right;
+  border-left:none;padding-bottom:6px;line-height:1.3}
+.meta-bar{display:flex;align-items:center;gap:22px;margin-top:26px;flex-wrap:wrap;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted)}
+.meta-bar .tag{color:var(--ink-soft)}
+.meta-bar a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid var(--line-2);
+  padding-bottom:1px;transition:color .2s,border-color .2s}
+.meta-bar a:hover{color:var(--gold);border-color:var(--gold)}
+.spacer{flex:1}
+.theme-toggle{display:flex;gap:2px;border:1px solid var(--line-2);border-radius:999px;padding:3px;background:var(--panel)}
+.theme-toggle button{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;
+  background:none;border:none;color:var(--muted);cursor:pointer;padding:5px 13px;border-radius:999px;
+  text-transform:uppercase;transition:.2s}
+.theme-toggle button.on{background:var(--gold);color:var(--bg)}
+
+/* ---------------- TAKEAWAYS ---------------- */
+.takeaways{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0 14px}
+.tk{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:17px 18px;
+  position:relative;overflow:hidden}
+.tk::before{content:attr(data-rq);position:absolute;top:9px;right:13px;
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.2em;color:var(--faint)}
+.tk h3{font-family:"Fraunces",serif;font-weight:600;font-size:16px;margin-bottom:7px;color:var(--gold);line-height:1.15}
+.tk p{font-size:13px;color:var(--ink-soft);line-height:1.46}
+.tk b{color:var(--ink);font-weight:600}
+
+/* ---------------- MAIN GRID ---------------- */
+.cols{display:grid;grid-template-columns:minmax(420px,0.92fr) 1.4fr;gap:26px;margin-top:26px;align-items:start}
+.panel-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.panel-h .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--muted)}
+.panel-h .hint{font-size:11.5px;color:var(--faint);font-family:"IBM Plex Mono",monospace}
+
+/* ----- LEFT: agent ranking ----- */
+.rank{background:var(--panel);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.agent{border-bottom:1px solid var(--line);cursor:pointer;transition:background .2s}
+.agent:last-child{border-bottom:none}
+.agent:hover,.agent.active{background:var(--panel-2)}
+.agent-top{display:grid;grid-template-columns:27px 30px 1fr auto;align-items:center;gap:13px;padding:15px 18px}
+.rk{font-family:"Fraunces",serif;font-weight:600;font-size:25px;color:var(--faint);text-align:center;transition:color .25s}
+.agent:hover .rk,.agent.active .rk{color:var(--gold)}
+.aname{font-family:"Fraunces",serif;font-weight:600;font-size:21px;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+.chev{font-size:10px;color:var(--muted);transition:transform .3s;display:inline-block}
+.agent.open .chev{transform:rotate(90deg)}
+.spark{display:flex;gap:3px;margin-top:7px}
+.spark i{height:4px;border-radius:2px;background:var(--gold);opacity:.55;display:block}
+.score-cell{text-align:right;min-width:118px}
+.score-cell .v{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:24px;color:var(--ink)}
+.score-cell .track{height:3px;background:var(--bar-track);border-radius:2px;margin-top:7px;overflow:hidden}
+.score-cell .fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--anthropic));width:0;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.wf-mini{display:flex;gap:0;padding:0 18px 14px 88px;flex-wrap:wrap}
+.wf-mini span{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);margin-right:16px}
+.wf-mini span b{color:var(--ink-soft);font-weight:500}
+
+/* model sub-rows */
+.models{max-height:0;overflow:hidden;transition:max-height .4s ease;background:var(--bg-2)}
+.agent.open .models{max-height:340px}
+.mrow{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:13px;
+  padding:9px 18px;border-top:1px solid var(--line);transition:background .15s}
+.mrow:hover{background:var(--panel-2)}
+.mdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:middle}
+.mname{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-soft)}
+.mname .fam{color:var(--faint);font-size:11px}
+.mvals{display:flex;flex-direction:column;align-items:flex-end;min-width:92px;line-height:1.2}
+.mvals .mscore{font-family:"IBM Plex Mono",monospace;font-size:16px;color:var(--ink)}
+.mvals .mscore.fail{color:var(--fail)}
+.mvals .mrank{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted)}
+
+/* ----- RIGHT: workflow panels ----- */
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.wp{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:16px 17px 17px;align-self:start}
+.wp-h{display:flex;align-items:center;gap:12px;cursor:pointer}
+.wp-h .name{font-family:"Fraunces",serif;font-weight:600;font-size:18px}
+.wp-h .metric{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin-left:auto}
+.wp-h .chev{font-size:10px;color:var(--muted);transition:transform .3s}
+.wp.open .wp-h .chev{transform:rotate(90deg)}
+/* always-visible detail block */
+.wp-meta{margin-top:12px}
+.wp-meta .desc{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px}
+.wp-facts{display:flex;flex-direction:column;gap:7px}
+.wp-facts .f{display:grid;grid-template-columns:74px 1fr;gap:11px;align-items:baseline}
+.wp-facts .k{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);padding-top:2px}
+.wp-facts .v{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);line-height:1.5}
+.chip{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;padding:1px 6px;
+  border:1px solid var(--line-2);border-radius:4px;margin:0 4px 4px 0;color:var(--ink-soft);white-space:nowrap}
+.chip.skill{color:var(--gold);border-color:var(--gold)}
+/* collapsible rankings */
+.wp-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.2,.8,.2,1)}
+.wp.open .wp-body{max-height:840px}
+.bars-cap{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin-top:15px;padding-top:14px;border-top:1px solid var(--line);margin-bottom:10px}
+.bars{display:flex;flex-direction:column;gap:5px}
+.bar{display:grid;grid-template-columns:112px 1fr auto;align-items:center;gap:10px;position:relative;
+  cursor:default;border-radius:3px;padding:2px 4px 2px 5px;transition:opacity .2s,background .2s,transform .2s}
+.bar .who{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px}
+.bar .who .ag{color:var(--muted)}
+.bar .blogo{flex:0 0 14px;width:14px;height:14px;color:var(--muted);display:inline-flex}
+.bar .blogo svg{width:14px;height:14px}
+.bar.hot .blogo{color:var(--gold)}
+/* top-3 corner badges (per-workflow rank) */
+.bar.t1::after,.bar.t2::after,.bar.t3::after{content:'';position:absolute;top:1px;right:1px;
+  width:0;height:0;border-style:solid;border-width:0 10px 10px 0;border-color:transparent var(--medal) transparent transparent}
+.bar.t1{--medal:#E2B85C} .bar.t2{--medal:#BFB8A6} .bar.t3{--medal:#C08A55}
+.bar.t1 .brank{color:#E2B85C} .bar.t2 .brank{color:#BFB8A6} .bar.t3 .brank{color:#C08A55}
+.bar.t1 .brank,.bar.t2 .brank,.bar.t3 .brank{font-weight:600}
+.bar .tk-bar{height:14px;background:var(--bar-track);border:1px solid var(--line-2);border-radius:3px;overflow:hidden;position:relative}
+.bar .tk-bar i{display:block;height:100%;border-radius:2px;opacity:0;transform:scaleX(0);transform-origin:left center}
+.bar .tk-bar i.play{animation:fillrise 1.5s cubic-bezier(.16,.84,.28,1) both}
+.bvals{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;min-width:48px;line-height:1.15}
+.bvals .bval{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft)}
+.bvals .brank{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--faint)}
+.bar.hot .bvals .bval{color:var(--ink)}
+.bar.failed .tk-bar{background:repeating-linear-gradient(45deg,var(--bar-track),var(--bar-track) 4px,transparent 4px,transparent 8px)}
+.bar.failed .who,.bar.failed .val{color:var(--fail)}
+.bars.dimmed .bar:not(.hot){opacity:.22}
+.bar.hot{background:var(--panel-2);transform:translateX(2px)}
+.bar.hot .who{color:var(--ink)}
+.fam-anthropic{background-color:var(--anthropic)} .fam-openai{background-color:var(--openai)}
+.fam-qwen{background-color:var(--qwen)} .fam-qwen2{background-color:var(--qwen-2)}
+.dot-anthropic{background-color:var(--anthropic)} .dot-openai{background-color:var(--openai)}
+.dot-qwen{background-color:var(--qwen)} .dot-qwen2{background-color:var(--qwen-2)}
+
+/* legend + footer */
+.legend{display:flex;gap:20px;align-items:center;margin-top:18px;flex-wrap:wrap;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted)}
+.legend .it{display:flex;align-items:center;gap:7px}
+.legend .sw{width:11px;height:11px;border-radius:3px}
+.legend .sw.failsw{background:repeating-linear-gradient(45deg,var(--bar-track),var(--bar-track) 3px,var(--fail) 3px,var(--fail) 6px)}
+footer{margin-top:46px;padding-top:22px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);line-height:1.7}
+footer b{color:var(--ink-soft);font-weight:500}
+
+/* tooltip */
+#tip{position:fixed;pointer-events:none;z-index:50;background:var(--bg-2);border:1px solid var(--line-2);
+  border-radius:5px;padding:11px 13px;box-shadow:var(--shadow);font-size:12px;opacity:0;
+  transition:opacity .14s;max-width:260px}
+#tip.show{opacity:1}
+#tip .t-h{font-family:"Fraunces",serif;font-weight:600;font-size:14px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+#tip .t-row{display:flex;justify-content:space-between;gap:18px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft)}
+#tip .t-row span:first-child{color:var(--muted)}
+#tip .t-sep{height:1px;background:var(--line);margin:7px 0}
+
+/* reveal animation */
+.rv{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes fillrise{0%{transform:scaleX(0);opacity:0}55%{opacity:1}100%{transform:scaleX(1);opacity:1}}
+
+/* agent logos */
+.logo{width:27px;height:27px;flex:0 0 27px;border:1px solid var(--line-2);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;color:var(--ink-soft);
+  background:var(--bg-2);transition:color .25s,border-color .25s}
+.logo svg{width:15px;height:15px}
+.agent:hover .logo,.agent.active .logo{color:var(--gold);border-color:var(--gold)}
+.mrow .logo{width:22px;height:22px;flex:0 0 22px;opacity:.85;border-radius:6px}
+.mrow .logo svg{width:12px;height:12px}
+
+@media(max-width:1080px){
+  .cols{grid-template-columns:1fr}
+  .takeaways{grid-template-columns:1fr 1fr}
+  .panels{grid-template-columns:1fr}
+  .subtitle{text-align:left}
+}
+@media(max-width:600px){.takeaways{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">NeurIPS 2026 &nbsp;·&nbsp; Financial Agent Benchmark</div>
+    <div class="title-row">
+      <h1>Herculean<span class="dot">.</span></h1>
+      <div class="subtitle">An agentic benchmark for financial intelligence — Trading, Hedging, Market Insights &amp; Auditing.</div>
+    </div>
+    <div class="meta-bar">
+      <span class="tag">v1.0</span>
+      <span>·</span>
+      <span>5 agents × 4 backbones × 4 workflows</span>
+      <span>·</span>
+      <span>Updated <span class="num">2026-05-27</span></span>
+      <span class="spacer"></span>
+      <a href="https://github.com/xueqingpeng/trading-analysis" target="_blank" rel="noopener">Code ↗</a>
+      <a href="https://huggingface.co/datasets/TheFinAI/Herculean" target="_blank" rel="noopener">Data ↗</a>
+      <div class="theme-toggle" id="themeToggle">
+        <button data-t="dark" class="on">Dark</button>
+        <button data-t="light">Light</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="takeaways" id="takeaways"></section>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <div>
+      <div class="panel-h">
+        <span class="lbl">Agent Leaderboard</span>
+        <span class="hint">total = mean over workflows × models · 0–100</span>
+      </div>
+      <div class="rank" id="rank"></div>
+      <div class="wf-note" style="margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--faint);line-height:1.6">
+        Score = each workflow's primary metric (Trading/Hedging: Sharpe · Market Insights: rubric · Auditing: accuracy),
+        min–max normalised across the 20 configs, then equally averaged. Failed runs (“—”, 5 attempts) score 0.
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div>
+      <div class="panel-h">
+        <span class="lbl">Per-Workflow Performance</span>
+        <span class="hint">hover a row on either side to link them</span>
+      </div>
+      <div class="panels" id="panels"></div>
+      <div class="legend">
+        <div class="it"><span class="sw" style="background:var(--anthropic)"></span>Claude Sonnet 4.6</div>
+        <div class="it"><span class="sw" style="background:var(--openai)"></span>GPT-5.4</div>
+        <div class="it"><span class="sw" style="background:var(--qwen)"></span>Qwen3.5-397B</div>
+        <div class="it"><span class="sw" style="background:var(--qwen-2)"></span>Qwen3.5-27B</div>
+        <div class="it"><span class="sw failsw"></span>failed (no valid run)</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <b>HERCULEAN</b> · five agent frameworks (ReAct, Claude Code, Codex, Hermes, OpenClaw) on four backbones
+    (Sonnet 4.6, GPT-5.4, Qwen3.5-397B, Qwen3.5-27B), evaluated across four MCP-grounded financial workflows.
+    Buy &amp; Hold baseline shown for reference in tooltips. Figures transcribed from Table 2.<br>
+    Composite scores are a leaderboard convenience (relative min–max within this table), not defined in the paper.
+  </footer>
+</div>
+
+<div id="tip"></div>
+
+<script>
+const DATA =
+{
+  "meta": {
+    "benchmark": "HERCULEAN",
+    "agents": [
+      "ReAct Agent",
+      "Claude Code",
+      "Codex",
+      "Hermes",
+      "OpenClaw"
+    ],
+    "models": [
+      "sonnet",
+      "gpt",
+      "qwen397",
+      "qwen27"
+    ],
+    "workflows": [
+      "Trading",
+      "Hedging",
+      "Market Insights",
+      "Auditing"
+    ],
+    "primary_metric": {
+      "Trading": "SR",
+      "Hedging": "SR",
+      "Market Insights": "Score",
+      "Auditing": "ACC"
+    }
+  },
+  "configs": [
+    {
+      "agent": "ReAct Agent",
+      "model": "sonnet"
+    },
+    {
+      "agent": "ReAct Agent",
+      "model": "gpt"
+    },
+    {
+      "agent": "ReAct Agent",
+      "model": "qwen397"
+    },
+    {
+      "agent": "ReAct Agent",
+      "model": "qwen27"
+    },
+    {
+      "agent": "Claude Code",
+      "model": "sonnet"
+    },
+    {
+      "agent": "Claude Code",
+      "model": "gpt"
+    },
+    {
+      "agent": "Claude Code",
+      "model": "qwen397"
+    },
+    {
+      "agent": "Claude Code",
+      "model": "qwen27"
+    },
+    {
+      "agent": "Codex",
+      "model": "sonnet"
+    },
+    {
+      "agent": "Codex",
+      "model": "gpt"
+    },
+    {
+      "agent": "Codex",
+      "model": "qwen397"
+    },
+    {
+      "agent": "Codex",
+      "model": "qwen27"
+    },
+    {
+      "agent": "Hermes",
+      "model": "sonnet"
+    },
+    {
+      "agent": "Hermes",
+      "model": "gpt"
+    },
+    {
+      "agent": "Hermes",
+      "model": "qwen397"
+    },
+    {
+      "agent": "Hermes",
+      "model": "qwen27"
+    },
+    {
+      "agent": "OpenClaw",
+      "model": "sonnet"
+    },
+    {
+      "agent": "OpenClaw",
+      "model": "gpt"
+    },
+    {
+      "agent": "OpenClaw",
+      "model": "qwen397"
+    },
+    {
+      "agent": "OpenClaw",
+      "model": "qwen27"
+    }
+  ],
+  "raw": {
+    "trading": {
+      "MSFT": {
+        "CR": [
+          0.41,
+          -3.58,
+          -13.09,
+          -12.18,
+          10.32,
+          -3.32,
+          15.18,
+          -10.83,
+          2.78,
+          0.6,
+          -8.09,
+          null,
+          8.72,
+          -0.06,
+          -14.86,
+          -6.77,
+          13.43,
+          -2.57,
+          -17.66,
+          -16.47
+        ],
+        "SR": [
+          0.24,
+          -0.7,
+          -1.74,
+          -1.76,
+          2.1,
+          -0.52,
+          2.84,
+          -1.38,
+          0.72,
+          0.23,
+          -1.09,
+          null,
+          1.89,
+          0.15,
+          -2.27,
+          -0.97,
+          3.46,
+          -0.37,
+          -2.72,
+          -2.63
+        ],
+        "MDD": [
+          13.18,
+          12.05,
+          21.79,
+          17.46,
+          7.51,
+          11.35,
+          7.06,
+          20.8,
+          8.63,
+          10.08,
+          16.59,
+          null,
+          6.02,
+          10.08,
+          19.89,
+          15.46,
+          3.87,
+          10.6,
+          22.33,
+          22.53
+        ],
+        "BL": {
+          "CR": -21.59,
+          "SR": -2.92,
+          "MDD": 26.04
+        }
+      },
+      "TSLA": {
+        "CR": [
+          -20.85,
+          -5.5,
+          -5.01,
+          1.15,
+          -24.26,
+          -13.67,
+          -8.65,
+          -2.58,
+          -19.75,
+          1.23,
+          -5.24,
+          null,
+          -18.36,
+          -29.23,
+          -8.5,
+          -2.43,
+          -26.77,
+          -18.03,
+          -2.35,
+          -11.99
+        ],
+        "SR": [
+          -5.89,
+          -1.08,
+          -3.37,
+          0.43,
+          -4.59,
+          -3.03,
+          -3.29,
+          -0.73,
+          -3.73,
+          0.3,
+          -1.19,
+          null,
+          -3.26,
+          -6.24,
+          -2.88,
+          -0.5,
+          -4.98,
+          -3.46,
+          -0.54,
+          -4.05
+        ],
+        "MDD": [
+          20.85,
+          6.61,
+          7.21,
+          7.3,
+          24.26,
+          16.69,
+          8.65,
+          9.36,
+          19.96,
+          11.32,
+          13.36,
+          null,
+          21.1,
+          29.26,
+          9.19,
+          6.06,
+          26.77,
+          22.74,
+          7.33,
+          11.99
+        ],
+        "BL": {
+          "CR": -15.18,
+          "SR": -1.72,
+          "MDD": 21.34
+        }
+      },
+      "AAPL": {
+        "CR": [
+          -2.41,
+          -0.87,
+          -9.81,
+          2.16,
+          7.75,
+          -1.17,
+          5.06,
+          -4.28,
+          9.48,
+          0.58,
+          -9.4,
+          2.09,
+          6.4,
+          5.07,
+          -5.36,
+          -5.39,
+          2.05,
+          -1.33,
+          -0.54,
+          1.73
+        ],
+        "SR": [
+          -0.42,
+          -0.19,
+          -2.66,
+          0.68,
+          1.61,
+          -0.26,
+          2.14,
+          -0.87,
+          2.16,
+          0.22,
+          -2.34,
+          1.29,
+          1.43,
+          1.05,
+          -1.07,
+          -1.13,
+          0.54,
+          -0.22,
+          -0.04,
+          0.47
+        ],
+        "MDD": [
+          9.35,
+          6.61,
+          16.06,
+          8.66,
+          8.39,
+          10.07,
+          2.21,
+          12.73,
+          5.09,
+          7.59,
+          11.92,
+          3.91,
+          8.27,
+          9.84,
+          14.58,
+          10.53,
+          9.56,
+          11.1,
+          9.71,
+          8.28
+        ],
+        "BL": {
+          "CR": -6.31,
+          "SR": -0.96,
+          "MDD": 11.24
+        }
+      },
+      "NVDA": {
+        "CR": [
+          -14.05,
+          -21.02,
+          5.97,
+          -9.75,
+          -21.31,
+          -26.24,
+          -3.75,
+          2.09,
+          -14.5,
+          -11.23,
+          -11.16,
+          null,
+          -13.33,
+          -19.24,
+          -6.9,
+          -1.55,
+          -19.2,
+          -17.27,
+          1.08,
+          -5.15
+        ],
+        "SR": [
+          -2.67,
+          -5.85,
+          1.1,
+          -1.91,
+          -2.88,
+          -4.97,
+          -0.56,
+          0.46,
+          -1.81,
+          -1.43,
+          -1.73,
+          null,
+          -2.13,
+          -2.74,
+          -1.25,
+          -0.14,
+          -2.6,
+          -2.3,
+          0.39,
+          -0.57
+        ],
+        "MDD": [
+          16.98,
+          21.09,
+          10.86,
+          15.51,
+          21.41,
+          26.24,
+          10.61,
+          9.08,
+          16.58,
+          13.13,
+          13.54,
+          null,
+          13.45,
+          19.65,
+          15.27,
+          9.08,
+          20.64,
+          17.38,
+          6.83,
+          18.24
+        ],
+        "BL": {
+          "CR": -7.69,
+          "SR": -0.72,
+          "MDD": 15.54
+        }
+      }
+    },
+    "hedging": {
+      "PAIR": [
+        "GOOG/MSFT",
+        "MSFT/TSLA",
+        "AAPL/MSFT",
+        "GOOG/MSFT",
+        "GOOG/MSFT",
+        "META/MSFT",
+        "AAPL/MSFT",
+        "NVDA/MSFT",
+        "GOOG/MSFT",
+        "GOOG/MSFT",
+        "NVDA/AAPL",
+        "NVDA/AAPL",
+        "NVDA/TSLA",
+        "NVDA/TSLA",
+        "AAPL/MSFT",
+        "NVDA/MSFT",
+        "META/MSFT",
+        "NVDA/TSLA",
+        "AAPL/MSFT",
+        "AAPL/MSFT"
+      ],
+      "CR": [
+        6.16,
+        -4.09,
+        15.75,
+        19.01,
+        4.59,
+        0.05,
+        1.07,
+        -9.14,
+        6.94,
+        6.97,
+        0.3,
+        -8.68,
+        3.75,
+        -4.48,
+        7.6,
+        -5.4,
+        6.66,
+        3.75,
+        1.92,
+        1.89
+      ],
+      "SR": [
+        1.45,
+        -1.06,
+        4.54,
+        4.16,
+        1.11,
+        0.17,
+        0.32,
+        -2.85,
+        1.66,
+        1.63,
+        0.16,
+        -2.25,
+        1.08,
+        -1.23,
+        1.72,
+        -1.05,
+        1.12,
+        1.08,
+        0.52,
+        0.5
+      ],
+      "MDD": [
+        4.31,
+        5.69,
+        3.16,
+        2.74,
+        7.85,
+        8.13,
+        8.38,
+        13.45,
+        4.6,
+        7.01,
+        8.33,
+        11.54,
+        3.91,
+        6.96,
+        7.35,
+        9.15,
+        6.33,
+        3.91,
+        8.59,
+        10.04
+      ]
+    },
+    "insights": {
+      "MSFT": {
+        "Score": [
+          9.61,
+          8.58,
+          5.63,
+          4.89,
+          9.25,
+          9.16,
+          6.17,
+          4.63,
+          9.2,
+          9.13,
+          9.16,
+          6.18,
+          9.18,
+          5.6,
+          7.05,
+          7.93,
+          9.18,
+          9.11,
+          2.63,
+          7.11
+        ],
+        "CR": [
+          -2.18,
+          -8.25,
+          -1.95,
+          -15.44,
+          0.49,
+          0.55,
+          -10.55,
+          6.77,
+          0.44,
+          11.26,
+          3.08,
+          -4.63,
+          -6.49,
+          -0.33,
+          -21.51,
+          -7.41,
+          -1.71,
+          3.06,
+          -12.91,
+          -6.49
+        ],
+        "SR": [
+          -0.03,
+          -0.2,
+          -0.15,
+          -0.55,
+          0.03,
+          0.03,
+          -0.51,
+          0.35,
+          0.03,
+          0.34,
+          0.13,
+          -0.1,
+          -0.19,
+          0.01,
+          -0.56,
+          -0.17,
+          -0.03,
+          0.12,
+          -0.35,
+          -0.2
+        ],
+        "MDD": [
+          7.65,
+          8.25,
+          3.28,
+          15.44,
+          8.88,
+          8.88,
+          10.55,
+          0.0,
+          7.65,
+          3.28,
+          3.28,
+          8.61,
+          8.39,
+          7.65,
+          21.51,
+          8.62,
+          9.64,
+          3.28,
+          14.05,
+          8.39
+        ],
+        "BL": {
+          "CR": -21.59,
+          "SR": -2.92,
+          "MDD": 26.04
+        }
+      },
+      "TSLA": {
+        "Score": [
+          9.81,
+          8.83,
+          4.46,
+          7.17,
+          9.25,
+          9.18,
+          4.83,
+          4.34,
+          9.22,
+          9.18,
+          8.69,
+          null,
+          9.25,
+          6.33,
+          5.67,
+          9.2,
+          9.25,
+          9.18,
+          3.25,
+          5.77
+        ],
+        "CR": [
+          0.92,
+          4.07,
+          -1.35,
+          -4.15,
+          11.88,
+          5.47,
+          0.0,
+          -4.15,
+          8.47,
+          6.91,
+          0.53,
+          null,
+          5.54,
+          -3.2,
+          -0.64,
+          -6.94,
+          8.78,
+          1.1,
+          -2.91,
+          -10.56
+        ],
+        "SR": [
+          0.04,
+          0.23,
+          -0.29,
+          -0.29,
+          0.41,
+          0.29,
+          0.0,
+          -0.35,
+          0.43,
+          0.38,
+          0.03,
+          null,
+          0.42,
+          -0.14,
+          -0.02,
+          -0.47,
+          0.31,
+          0.06,
+          -0.45,
+          -0.72
+        ],
+        "MDD": [
+          5.67,
+          1.58,
+          1.35,
+          4.15,
+          4.18,
+          1.58,
+          0.0,
+          4.15,
+          1.58,
+          1.58,
+          5.36,
+          null,
+          1.58,
+          8.16,
+          4.96,
+          6.94,
+          4.18,
+          4.18,
+          2.91,
+          10.56
+        ],
+        "BL": {
+          "CR": -15.18,
+          "SR": -1.72,
+          "MDD": 21.34
+        }
+      },
+      "AAPL": {
+        "Score": [
+          9.81,
+          9.03,
+          6.02,
+          5.44,
+          9.18,
+          9.13,
+          4.71,
+          3.76,
+          9.16,
+          9.11,
+          8.62,
+          null,
+          9.18,
+          4.93,
+          6.33,
+          8.47,
+          9.13,
+          6.59,
+          3.56,
+          7.15
+        ],
+        "CR": [
+          -2.96,
+          -8.46,
+          -9.47,
+          -17.99,
+          1.23,
+          -3.6,
+          10.28,
+          -2.65,
+          -4.48,
+          -3.99,
+          0.15,
+          -4.73,
+          3.56,
+          6.47,
+          -11.7,
+          -2.55,
+          -0.9,
+          -2.57,
+          -5.14,
+          -3.53
+        ],
+        "SR": [
+          -0.06,
+          -0.18,
+          -0.31,
+          -0.5,
+          0.05,
+          -0.07,
+          0.44,
+          0.06,
+          -0.09,
+          -0.09,
+          0.02,
+          -0.14,
+          0.1,
+          0.82,
+          -0.49,
+          -0.04,
+          0.0,
+          -0.05,
+          -0.1,
+          -0.07
+        ],
+        "MDD": [
+          11.25,
+          13.51,
+          11.25,
+          19.6,
+          13.51,
+          10.42,
+          0.15,
+          31.14,
+          11.25,
+          10.42,
+          2.94,
+          11.11,
+          8.09,
+          0.0,
+          13.72,
+          13.51,
+          13.51,
+          10.42,
+          12.85,
+          14.24
+        ],
+        "BL": {
+          "CR": -6.31,
+          "SR": -0.96,
+          "MDD": 11.24
+        }
+      },
+      "NVDA": {
+        "Score": [
+          9.48,
+          8.58,
+          6.22,
+          7.44,
+          9.13,
+          9.02,
+          5.66,
+          3.7,
+          9.16,
+          9.16,
+          8.02,
+          null,
+          9.16,
+          6.27,
+          7.71,
+          8.42,
+          9.16,
+          7.34,
+          2.62,
+          5.66
+        ],
+        "CR": [
+          -6.86,
+          -10.07,
+          -13.05,
+          -2.32,
+          -8.87,
+          -9.54,
+          -8.03,
+          -4.24,
+          -7.16,
+          -6.86,
+          -17.32,
+          null,
+          -5.83,
+          -6.86,
+          -3.0,
+          -2.32,
+          -6.14,
+          -5.54,
+          -9.25,
+          -12.25
+        ],
+        "SR": [
+          -0.22,
+          -0.29,
+          -0.58,
+          -0.05,
+          -0.26,
+          -0.29,
+          -0.5,
+          -0.34,
+          -0.2,
+          -0.22,
+          -0.63,
+          null,
+          -0.14,
+          -0.26,
+          -0.09,
+          -0.05,
+          -0.16,
+          -0.18,
+          -0.33,
+          -0.37
+        ],
+        "MDD": [
+          7.29,
+          12.69,
+          13.05,
+          7.29,
+          9.96,
+          9.96,
+          8.35,
+          5.98,
+          10.28,
+          7.29,
+          17.32,
+          null,
+          9.96,
+          9.96,
+          7.29,
+          9.96,
+          7.29,
+          9.96,
+          6.65,
+          9.25
+        ],
+        "BL": {
+          "CR": -7.69,
+          "SR": -0.72,
+          "MDD": 15.54
+        }
+      }
+    },
+    "auditing": {
+      "ACC": [
+        20.0,
+        3.08,
+        15.38,
+        18.46,
+        66.15,
+        44.62,
+        36.92,
+        43.08,
+        63.08,
+        63.08,
+        49.23,
+        27.69,
+        20.0,
+        20.0,
+        20.0,
+        16.92,
+        66.15,
+        66.15,
+        43.08,
+        36.92
+      ],
+      "SER": [
+        80.0,
+        80.0,
+        80.0,
+        80.0,
+        0.0,
+        0.0,
+        3.08,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        44.62,
+        80.0,
+        80.0,
+        80.0,
+        80.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "EER": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        6.15,
+        6.15,
+        9.23,
+        12.31,
+        6.15,
+        6.15,
+        6.15,
+        7.69,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        6.15,
+        6.15,
+        10.77,
+        7.69
+      ],
+      "CER": [
+        0.0,
+        16.92,
+        4.62,
+        1.54,
+        27.69,
+        49.23,
+        50.77,
+        44.62,
+        30.77,
+        30.77,
+        44.62,
+        20.0,
+        0.0,
+        0.0,
+        0.0,
+        3.08,
+        27.69,
+        27.69,
+        46.15,
+        55.38
+      ]
+    }
+  },
+  "scores": {
+    "workflow": {
+      "Trading": [
+        42.70875426333782,
+        46.29074877116492,
+        45.74937046040087,
+        64.34182762157513,
+        62.6621912335891,
+        42.89028493533208,
+        79.72653109414546,
+        62.2494639810257,
+        66.5704250270618,
+        70.55509644797849,
+        47.80160383323841,
+        20.938796680497923,
+        67.9719434647209,
+        47.83583918024506,
+        45.28696784920605,
+        61.361905507369606,
+        62.209716882506235,
+        50.81648358634284,
+        61.65961536232391,
+        49.4197471552802
+      ],
+      "Hedging": [
+        62.3680649526387,
+        31.79972936400541,
+        100.0,
+        95.3721244925575,
+        58.227334235453306,
+        46.77943166441136,
+        48.606224627875505,
+        10.0,
+        64.92557510148849,
+        64.56021650879566,
+        46.65764546684709,
+        17.307171853856563,
+        57.861975642760484,
+        29.72936400541272,
+        65.65629228687415,
+        31.921515561569688,
+        58.34912043301759,
+        57.861975642760484,
+        51.04194857916103,
+        50.79837618403247
+      ],
+      "Market Insights": [
+        100.0,
+        87.55862389539743,
+        44.48421971996869,
+        53.3072601386271,
+        93.50285065628739,
+        92.43185740768058,
+        40.941227583223025,
+        24.447832529660324,
+        93.26517603118141,
+        92.7223362100898,
+        85.63533378185394,
+        13.943409742120345,
+        93.37560245860472,
+        47.041380969224235,
+        59.214762294908276,
+        84.19162522603463,
+        93.19560245860472,
+        77.61647854094764,
+        10.0,
+        55.97939890896207
+      ],
+      "Auditing": [
+        34.1446012367211,
+        10.0,
+        27.551926430949738,
+        31.947042968130646,
+        100.0,
+        69.27699381639448,
+        58.28920247344221,
+        67.07943554780402,
+        95.61915332170604,
+        95.61915332170604,
+        75.85539876327888,
+        45.118122720786424,
+        34.1446012367211,
+        34.1446012367211,
+        34.1446012367211,
+        29.749484699540194,
+        100.0,
+        100.0,
+        67.07943554780402,
+        58.28920247344221
+      ]
+    },
+    "config_total": [
+      59.80535511317441,
+      43.912275507641944,
+      54.44637915282983,
+      61.2420638052226,
+      78.59809403133245,
+      62.84464195595463,
+      56.89079644467155,
+      40.94418301462251,
+      80.09508237035944,
+      80.86420062214249,
+      63.98749546130458,
+      24.326875249315314,
+      63.338530700701796,
+      39.68779634790078,
+      51.075655916927396,
+      51.80613274862853,
+      78.43860994353214,
+      71.57373444251274,
+      47.44524987232224,
+      53.621681180429235
+    ],
+    "agent_ranking": [
+      {
+        "agent": "OpenClaw",
+        "total": 62.76981885969909,
+        "workflow": {
+          "Trading": 56.026390746613295,
+          "Hedging": 54.512855209742895,
+          "Market Insights": 59.197869977128605,
+          "Auditing": 81.34215950531156
+        }
+      },
+      {
+        "agent": "Codex",
+        "total": 62.318413425780456,
+        "workflow": {
+          "Trading": 51.466480497194155,
+          "Hedging": 48.36265223274695,
+          "Market Insights": 71.39156394131138,
+          "Auditing": 78.05295703186934
+        }
+      },
+      {
+        "agent": "Claude Code",
+        "total": 59.819428861645285,
+        "workflow": {
+          "Trading": 61.882117811023086,
+          "Hedging": 40.903247631935045,
+          "Market Insights": 62.83094204421283,
+          "Auditing": 73.66140795941018
+        }
+      },
+      {
+        "agent": "ReAct Agent",
+        "total": 54.851518394717196,
+        "workflow": {
+          "Trading": 49.77267527911969,
+          "Hedging": 72.3849797023004,
+          "Market Insights": 71.3375259384983,
+          "Auditing": 25.91089265895037
+        }
+      },
+      {
+        "agent": "Hermes",
+        "total": 51.477028928539625,
+        "workflow": {
+          "Trading": 55.6141640003854,
+          "Hedging": 46.29228687415426,
+          "Market Insights": 70.95584273719297,
+          "Auditing": 33.04582210242587
+        }
+      }
+    ]
+  }
+}
+;
+</script>
+<script>
+/* ---------- config ---------- */
+const FAM = {sonnet:{key:'anthropic',label:'Anthropic'},gpt:{key:'openai',label:'OpenAI'},
+  qwen397:{key:'qwen',label:'Qwen'},qwen27:{key:'qwen2',label:'Qwen'}};
+const MODEL_LABEL = {sonnet:'sonnet',gpt:'gpt',qwen397:'qwen397',qwen27:'qwen27'};
+const WF = DATA.meta.workflows;
+const WF_METRIC = {Trading:'Sharpe Ratio',Hedging:'Sharpe Ratio','Market Insights':'Rubric 0–10',Auditing:'Accuracy %'};
+const AGENT_ABBR = {'ReAct Agent':'ReAct','Claude Code':'ClaudeC','Codex':'Codex','Hermes':'Hermes','OpenClaw':'OpenClaw'};
+
+/* ---------- per-workflow detail cards (shown before expanding) ---------- */
+const chips = arr => arr.map(s=>`<span class="chip">${s}</span>`).join('');
+const WF_INFO = {
+ Trading:{
+   desc:'Sequential daily market-timing for a single stock over a three-month horizon — turn noisy price, news and filing signals into an executable decision each day, with strict no-lookahead constraints.',
+   facts:[
+     ['Skill','<span class="chip skill">trading_mcp</span>'],
+     ['Actions',chips(['BUY','SELL','HOLD'])],
+     ['Symbols',chips(['MSFT','TSLA','AAPL','NVDA'])],
+     ['Market','Daily-stepped offline DuckDB · 3-mo eval window (+ live regime Apr–May 2026)'],
+     ['Data','Yahoo Finance prices &amp; news · SEC EDGAR 10-K / 10-Q filings'],
+     ['Scored by','Cumulative return · Sharpe · Max drawdown — vs. Buy &amp; Hold baseline'],
+   ],
+ },
+ Hedging:{
+   desc:'Market-neutral pair trading: choose one ordered pair from an eight-stock universe, then manage a dollar-neutral long/short position day by day, betting on convergence rather than direction.',
+   facts:[
+     ['Skill','<span class="chip skill">hedging_mcp</span>'],
+     ['Actions',chips(['LONG_SHORT','SHORT_LONG','HOLD','CLOSE'])],
+     ['Universe',chips(['AAPL','ADBE','AMZN','GOOGL','META','MSFT','NVDA','TSLA'])],
+     ['Market','Dollar-neutral pairs environment · DuckDB · 3-mo eval'],
+     ['Data','Yahoo Finance · SEC EDGAR filings'],
+     ['Scored by','Selected pair · Cumulative return · Sharpe · Max drawdown'],
+   ],
+ },
+ 'Market Insights':{
+   desc:'Analyst-style alpha discovery: synthesise prices, news and filings into a structured eight-section weekly investment report plus a graduated rating that must hold up to professional scrutiny.',
+   facts:[
+     ['Skill','<span class="chip skill">market_insights_mcp</span>'],
+     ['Output','8-section Markdown report + rating '+chips(['STRONG_BUY … STRONG_SELL'])],
+     ['Symbols',chips(['MSFT','TSLA','AAPL','NVDA'])],
+     ['Cadence','Weekly · ~13 reports per asset · 3-mo eval'],
+     ['Data','Yahoo Finance · SEC EDGAR · 16 deterministic weekly metrics + peer map'],
+     ['Scored by','Rubric 0–10 (LLM judge over 4 dimensions) + simulated CR / SR / MDD'],
+   ],
+ },
+ Auditing:{
+   desc:'Financial supervision under deterministic constraints: verify individual XBRL numeric facts in SEC-style filings against the US-GAAP taxonomy, reasoning over the calculation network to locate and correct reporting errors.',
+   facts:[
+     ['Skill','<span class="chip skill">auditing_mcp</span>'],
+     ['Output','Reported value vs. computed correct value, per fact'],
+     ['Corpus','65 static audit instances · multiple filers, fiscal periods &amp; concept types'],
+     ['Inputs','6 interconnected XBRL documents + US-GAAP taxonomy'],
+     ['Data','SEC EDGAR XBRL filings (FinAuditing lineage)'],
+     ['Scored by','Accuracy + structural / extraction / calculation error rates (sum to 1)'],
+   ],
+ },
+};
+const cfgIndex = (a,m)=>DATA.configs.findIndex(c=>c.agent===a&&c.model===m);
+const fmt = (x,d=1)=> x==null?'—':(x>0&&d>0?'':'')+x.toFixed(d);
+
+/* ---------- agent logos (cohesive SVG monograms — swap for real brand files later) ---------- */
+const LOGOS = {
+ 'ReAct Agent':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 13a8.5 8.5 0 1 1-2.4-6"/><path d="M19 3.5V8h-4.5"/></svg>',
+ 'Claude Code':'<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/></svg>',
+ 'Codex':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-4.5 5 4.5 5"/><path d="M16 7l4.5 5-4.5 5"/><line x1="13.5" y1="5" x2="10.5" y2="19"/></svg>',
+ 'Hermes':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5v13"/><circle cx="12" cy="4.5" r="1.4"/><path d="M12 9c-2.2-2.6-5.2-3.1-8.3-2.4C5.4 8.7 7.7 10 12 10.3"/><path d="M12 9c2.2-2.6 5.2-3.1 8.3-2.4C18.6 8.7 16.3 10 12 10.3"/></svg>',
+ 'OpenClaw':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4.5C5 9.5 5 14.5 6.8 19.5"/><path d="M12 3.5c-1.8 5.8-1.8 11.2 0 17"/><path d="M17.5 4.5c1.5 5 1.5 10-.3 15"/></svg>',
+};
+
+/* ---------- ranks ---------- */
+// overall rank by config_total (1..20)
+const overallOrder=[...Array(20).keys()].sort((a,b)=>DATA.scores.config_total[b]-DATA.scores.config_total[a]);
+const cfgRank={}; overallOrder.forEach((idx,i)=>cfgRank[idx]=i+1);
+// per-workflow rank by that workflow's score (1..20)
+const wfRank={};
+WF.forEach(w=>{
+  const sc=DATA.scores.workflow[w];
+  const order=[...Array(20).keys()].sort((a,b)=>sc[b]-sc[a]);
+  wfRank[w]={}; order.forEach((idx,i)=>wfRank[w][idx]=i+1);
+});
+
+/* ---------- takeaways ---------- */
+const TK=[
+ {rq:'RQ1',h:'Still not reliable',p:'No agent–backbone pair dominates. Many failures are <b>execution-level</b>, not reasoning — Codex+qwen27 fails to complete Trading & Market Insights entirely.'},
+ {rq:'RQ2',h:'Capability is workflow-bound',p:'Narrative synthesis (<b>Market Insights</b>) is comparatively easy; <b>Hedging</b> & <b>Auditing</b> — needing state, relational reasoning & verification — stay hard.'},
+ {rq:'RQ3',h:'Framework > backbone',p:'Same backbone, different behaviour. In Auditing, CLI-style frameworks reach <b>66% accuracy</b> while ReAct/Hermes stall near 20% from broken trajectories.'},
+ {rq:'RQ4',h:'Scale ≠ competence',p:'Frontier backbones help but don’t guarantee robust workflow competence; fluent financial narrative does <b>not</b> transfer to deterministic verification.'},
+];
+document.getElementById('takeaways').innerHTML = TK.map((t,i)=>
+ `<div class="tk rv" data-rq="${t.rq}" style="animation-delay:${i*70}ms"><h3>${t.h}</h3><p>${t.p}</p></div>`).join('');
+
+/* ---------- left ranking ---------- */
+const maxTotal = Math.max(...DATA.scores.agent_ranking.map(a=>a.total));
+const rankEl = document.getElementById('rank');
+DATA.scores.agent_ranking.forEach((a,i)=>{
+  const wf = a.workflow;
+  const sparkMax = Math.max(...WF.map(w=>wf[w]));
+  const spark = WF.map(w=>`<i style="width:${10+ (wf[w]/100)*34}px;opacity:${.35+ (wf[w]/sparkMax)*.6}"></i>`).join('');
+  const mini = WF.map(w=>`<span>${w==='Market Insights'?'Insight':w} <b class="num">${wf[w].toFixed(0)}</b></span>`).join('');
+  const div=document.createElement('div');
+  div.className='agent rv';div.style.animationDelay=(300+i*80)+'ms';
+  div.dataset.agent=a.agent;
+  div.innerHTML=`
+    <div class="agent-top">
+      <span class="logo">${LOGOS[a.agent]||''}</span>
+      <div class="rk">${i+1}</div>
+      <div>
+        <div class="aname"><span class="chev">▶</span>${a.agent}</div>
+        <div class="spark">${spark}</div>
+      </div>
+      <div class="score-cell">
+        <div class="v num">${a.total.toFixed(1)}</div>
+        <div class="track"><div class="fill" data-w="${(a.total/maxTotal)*100}"></div></div>
+      </div>
+    </div>
+    <div class="wf-mini">${mini}</div>
+    <div class="models">${
+      DATA.meta.models.map(m=>{
+        const idx=cfgIndex(a.agent,m);const tot=DATA.scores.config_total[idx];const f=FAM[m];
+        return `<div class="mrow" data-cfg="${idx}">
+          <span class="logo">${LOGOS[a.agent]||''}</span>
+          <span class="mname"><span class="mdot dot-${f.key}"></span>${MODEL_LABEL[m]} <span class="fam">${f.label}</span></span>
+          <span class="mvals"><span class="mscore num">${tot.toFixed(1)}</span><span class="mrank">rank ${cfgRank[idx]}/20</span></span>
+        </div>`;
+      }).join('')
+    }</div>`;
+  rankEl.appendChild(div);
+
+  div.querySelector('.agent-top').addEventListener('click',()=>div.classList.toggle('open'));
+  div.addEventListener('mouseenter',()=>highlight({agent:a.agent}));
+  div.addEventListener('mouseleave',clearHi);
+  div.querySelectorAll('.mrow').forEach(mr=>{
+    mr.addEventListener('mouseenter',e=>{e.stopPropagation();highlight({cfg:+mr.dataset.cfg});});
+  });
+});
+
+/* ---------- right panels ---------- */
+const panelsEl=document.getElementById('panels');
+// shared ordering: follow the left leaderboard (agent ranking order × table model order)
+const leftOrder = DATA.scores.agent_ranking.flatMap(a=>DATA.meta.models.map(m=>cfgIndex(a.agent,m)));
+WF.forEach((w,wi)=>{
+  const sc=DATA.scores.workflow[w];
+  const maxv=Math.max(...sc);
+  const rows=leftOrder.map(idx=>{
+    const c=DATA.configs[idx];const f=FAM[c.model];const v=sc[idx];
+    const failed = isFailed(w,idx);
+    const width=(v/maxv)*100;
+    const r=wfRank[w][idx];
+    const medal = (!failed && r<=3) ? ` t${r}` : '';
+    return `<div class="bar ${failed?'failed':''}${medal}" data-cfg="${idx}" data-wf="${wi}">
+      <span class="who"><span class="blogo">${LOGOS[c.agent]||''}</span><span class="ag">${AGENT_ABBR[c.agent]}</span> ${MODEL_LABEL[c.model]}</span>
+      <span class="tk-bar"><i class="fam-${f.key}" style="width:${width}%"></i></span>
+      <span class="bvals"><span class="bval num">${failed?'—':v.toFixed(0)}</span><span class="brank num">#${r}</span></span>
+    </div>`;
+  }).join('');
+  const div=document.createElement('div');
+  div.className='wp rv';div.style.animationDelay=(380+wi*90)+'ms';
+  const info=WF_INFO[w];
+  const facts=info.facts.map(f=>`<div class="f"><span class="k">${f[0]}</span><span class="v">${f[1]}</span></div>`).join('');
+  div.innerHTML=`<div class="wp-h"><span class="name">${w}</span><span class="metric">${WF_METRIC[w]}</span><span class="chev">▶</span></div>
+    <div class="wp-meta"><div class="desc">${info.desc}</div><div class="wp-facts">${facts}</div></div>
+    <div class="wp-body"><div class="bars-cap">Per-model leaderboard · normalised 0–100</div><div class="bars" id="bars-${wi}">${rows}</div></div>`;
+  panelsEl.appendChild(div);
+  div.querySelector('.wp-h').addEventListener('click',()=>{
+    div.classList.toggle('open');
+    if(div.classList.contains('open')) fillBars(div);
+  });
+});
+
+// (re)play the "grow from nothing" fill animation for a panel's bars, staggered top-to-bottom
+function fillBars(el){
+  const bars=el.querySelectorAll('.tk-bar i');
+  bars.forEach(i=>{i.classList.remove('play');i.style.animationDelay='';});
+  void el.offsetWidth; // force reflow so removing .play resets the animation before replay
+  bars.forEach((i,k)=>{i.style.animationDelay=(k*55)+'ms';i.classList.add('play');});
+}
+
+/* ---------- failure detection (per workflow primary metric) ---------- */
+function isFailed(w,idx){
+  if(w==='Trading'){return ['MSFT','TSLA','AAPL','NVDA'].every(a=>DATA.raw.trading[a].SR[idx]==null);}
+  if(w==='Hedging'){return DATA.raw.hedging.SR[idx]==null;}
+  if(w==='Market Insights'){return ['MSFT','TSLA','AAPL','NVDA'].every(a=>DATA.raw.insights[a].Score[idx]==null);}
+  if(w==='Auditing'){return DATA.raw.auditing.ACC[idx]==null;}
+  return false;
+}
+
+/* ---------- highlight linking ---------- */
+const allBars=()=>document.querySelectorAll('.bar');
+function highlight({agent,cfg}){
+  document.querySelectorAll('.bars').forEach(b=>b.classList.add('dimmed'));
+  allBars().forEach(bar=>{
+    const c=DATA.configs[+bar.dataset.cfg];
+    const on = agent? c.agent===agent : (+bar.dataset.cfg===cfg);
+    bar.classList.toggle('hot',on);
+  });
+  if(agent){document.querySelectorAll('.agent').forEach(a=>a.classList.toggle('active',a.dataset.agent===agent));}
+}
+function clearHi(){
+  document.querySelectorAll('.bars').forEach(b=>b.classList.remove('dimmed'));
+  allBars().forEach(b=>b.classList.remove('hot'));
+  document.querySelectorAll('.agent').forEach(a=>a.classList.remove('active'));
+}
+
+/* ---------- tooltip ---------- */
+const tip=document.getElementById('tip');
+function tipRows(w,idx){
+  const c=DATA.configs[idx];const f=FAM[c.model];
+  let body='';
+  const line=(k,v)=>`<div class="t-row"><span>${k}</span><span>${v}</span></div>`;
+  if(w==='Trading'||w==='Market Insights'){
+    const src=w==='Trading'?DATA.raw.trading:DATA.raw.insights;
+    ['MSFT','TSLA','AAPL','NVDA'].forEach(a=>{
+      const d=src[a];const extra=w==='Market Insights'?`sc ${fmt(d.Score[idx])} · `:'';
+      body+=line(a,`${extra}SR ${fmt(d.SR[idx])} · CR ${fmt(d.CR[idx])}% · MDD ${fmt(d.MDD[idx])}%`);
+    });
+    const bl=src.MSFT.BL;
+    body+=`<div class="t-sep"></div>`+line('B&H (MSFT)',`SR ${fmt(bl.SR)} · CR ${fmt(bl.CR)}%`);
+  } else if(w==='Hedging'){
+    const h=DATA.raw.hedging;
+    body+=line('Pair',h.PAIR[idx]);
+    body+=line('Sharpe',fmt(h.SR[idx]));
+    body+=line('Cum. return',fmt(h.CR[idx])+'%');
+    body+=line('Max drawdown',fmt(h.MDD[idx])+'%');
+  } else {
+    const ad=DATA.raw.auditing;
+    body+=line('Accuracy',fmt(ad.ACC[idx])+'%');
+    body+=line('Struct. err (SER)',fmt(ad.SER[idx])+'%');
+    body+=line('Extract. err (EER)',fmt(ad.EER[idx])+'%');
+    body+=line('Calc. err (CER)',fmt(ad.CER[idx])+'%');
+  }
+  return `<div class="t-h"><span class="mdot dot-${f.key}" style="width:9px;height:9px;border-radius:50%;display:inline-block"></span>${c.agent} · ${c.model}</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">${w}</div>${body}`;
+}
+document.addEventListener('mouseover',e=>{
+  const bar=e.target.closest('.bar');
+  if(!bar){return;}
+  tip.innerHTML=tipRows(WF[+bar.dataset.wf],+bar.dataset.cfg);
+  tip.classList.add('show');
+});
+document.addEventListener('mousemove',e=>{
+  if(!tip.classList.contains('show'))return;
+  const pad=16;let x=e.clientX+pad,y=e.clientY+pad;
+  const r=tip.getBoundingClientRect();
+  if(x+r.width>innerWidth-10)x=e.clientX-r.width-pad;
+  if(y+r.height>innerHeight-10)y=e.clientY-r.height-pad;
+  tip.style.left=x+'px';tip.style.top=y+'px';
+});
+document.addEventListener('mouseout',e=>{ if(e.target.closest('.bar'))tip.classList.remove('show'); });
+// link bar hover to panels + left
+document.addEventListener('mouseover',e=>{const bar=e.target.closest('.bar');if(bar)highlight({cfg:+bar.dataset.cfg});});
+document.addEventListener('mouseout',e=>{if(e.target.closest('.bar'))clearHi();});
+
+/* ---------- theme ---------- */
+const tt=document.getElementById('themeToggle');
+tt.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  document.documentElement.setAttribute('data-theme',b.dataset.t);
+  tt.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+});
+
+/* ---------- animate bar widths after paint ---------- */
+requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  document.querySelectorAll('.fill,[data-w]').forEach(el=>{el.style.width=el.dataset.w+'%';el.classList.add('on');});
+}));
+</script>
+</body>
+</html>
