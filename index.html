@@ -12,6 +12,7 @@
   --anthropic:#E0A040; --anthropic-2:#caa86a;
   --openai:#37C9A6;
   --qwen:#9A78EA; --qwen-2:#CABAF5;
+  --wf-trade:#E63450; --wf-hedge:#D32A8C; --wf-insight:#8E2DC8; --wf-audit:#4A18E8;
 }
 html[data-theme="dark"]{
   --bg:#13110D; --bg-2:#1A1712; --panel:#1C1813; --panel-2:#211C16;
@@ -31,6 +32,7 @@ html[data-theme="light"]{
   --bar-track:#E6DDC9; --shadow:0 18px 50px -28px rgba(80,60,20,.35);
   --fail:#BCB099;
   --anthropic:#C07E1C; --openai:#159E80; --qwen:#7C5BD6; --qwen-2:#A78FE2; --anthropic-2:#9d7a35;
+  --wf-trade:#C8002F; --wf-hedge:#A8126D; --wf-insight:#6818A2; --wf-audit:#2E08C0;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -110,13 +112,20 @@ h1 .dot{color:var(--gold)}
 
 /* ----- LEFT: agent ranking ----- */
 .rank{background:var(--panel);border:1px solid var(--line);border-radius:4px;overflow:hidden}
-.agent{border-bottom:1px solid var(--line);cursor:pointer;transition:background .2s}
+.agent{border-bottom:1px solid var(--line);cursor:pointer;transition:background .2s;position:relative}
+.agent.champ{background:linear-gradient(90deg,rgba(216,174,94,.10),rgba(216,174,94,0) 55%)}
+html[data-theme="light"] .agent.champ{background:linear-gradient(90deg,rgba(169,118,42,.10),rgba(169,118,42,0) 55%)}
+.agent.champ::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold)}
+.agent.champ .rk{color:var(--gold)}
+.rk-medal{display:inline-block;width:18px;text-align:center;margin-right:1px;color:var(--gold)}
+.rk2{color:#BFB8A6}.rk3{color:#C08A55}
 .agent:last-child{border-bottom:none}
 .agent:hover,.agent.active{background:var(--panel-2)}
-.agent-top{display:grid;grid-template-columns:27px 30px 1fr auto;align-items:center;gap:13px;padding:15px 18px}
+.agent-top{display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:13px;padding:15px 18px;position:relative}
 .rk{font-family:"Fraunces",serif;font-weight:600;font-size:25px;color:var(--faint);text-align:center;transition:color .25s}
 .agent:hover .rk,.agent.active .rk{color:var(--gold)}
-.aname{font-family:"Fraunces",serif;font-weight:600;font-size:21px;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+.aname{font-family:"Fraunces",serif;font-weight:600;font-size:21px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.aname .logo{order:0}
 .chev{font-size:10px;color:var(--muted);transition:transform .3s;display:inline-block}
 .agent.open .chev{transform:rotate(90deg)}
 .spark{display:flex;gap:3px;margin-top:7px}
@@ -125,15 +134,41 @@ h1 .dot{color:var(--gold)}
 .score-cell .v{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:24px;color:var(--ink)}
 .score-cell .track{height:3px;background:var(--bar-track);border-radius:2px;margin-top:7px;overflow:hidden}
 .score-cell .fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--anthropic));width:0;transition:width 1s cubic-bezier(.2,.8,.2,1)}
-.wf-mini{display:flex;gap:0;padding:0 18px 14px 88px;flex-wrap:wrap}
-.wf-mini span{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);margin-right:16px}
-.wf-mini span b{color:var(--ink-soft);font-weight:500}
+/* B: per-workflow mini pie charts (one per workflow) */
+.wf-mini{display:flex;gap:18px;padding:4px 18px 14px 81px}
+.wfm{display:flex;align-items:center;gap:8px}
+.wfm .pie{--p:0;--c:var(--ink);width:26px;height:26px;border-radius:50%;
+  background:conic-gradient(var(--c) calc(var(--p)*1%), var(--bar-track) 0);
+  position:relative;flex:0 0 26px;
+  transition:--p 2.4s linear}
+.wfm .pie::after{content:'';position:absolute;inset:5px;border-radius:50%;background:var(--panel)}
+.agent:hover .wfm .pie::after,.agent.active .wfm .pie::after,.agent.champ .wfm .pie::after{background:var(--panel-2)}
+.wfm .meta{display:flex;flex-direction:column;line-height:1.05}
+.wfm .meta .lab{font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted)}
+.wfm .meta .val{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums;font-weight:600}
+.wf-trade   .pie{--c:var(--wf-trade)}
+.wf-hedge   .pie{--c:var(--wf-hedge)}
+.wf-insight .pie{--c:var(--wf-insight)}
+.wf-audit   .pie{--c:var(--wf-audit)}
+/* register --p so conic-gradient can animate */
+@property --p{syntax:'<number>';inherits:true;initial-value:0}
 
 /* model sub-rows */
 .models{max-height:0;overflow:hidden;transition:max-height .4s ease;background:var(--bg-2)}
 .agent.open .models{max-height:340px}
-.mrow{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:13px;
+.mrow{display:grid;grid-template-columns:22px 1fr auto auto;align-items:center;gap:13px;
   padding:9px 18px;border-top:1px solid var(--line);transition:background .15s}
+.pies-mini{display:flex;gap:5px}
+.pies-mini .pie{--p:0;--c:var(--ink);width:10px;height:10px;border-radius:50%;flex:0 0 10px;position:relative;
+  background:conic-gradient(var(--c) calc(var(--p)*1%), var(--bar-track) 0);opacity:.7;
+  transition:--p 1.5s linear,opacity .2s}
+.mrow:hover .pies-mini .pie{opacity:1}
+.pies-mini .pie::after{display:none} /* solid: no donut hole */
+.pies-mini .pie.wf-trade  {--c:var(--wf-trade)}
+.pies-mini .pie.wf-hedge  {--c:var(--wf-hedge)}
+.pies-mini .pie.wf-insight{--c:var(--wf-insight)}
+.pies-mini .pie.wf-audit  {--c:var(--wf-audit)}
 .mrow:hover{background:var(--panel-2)}
 .mdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:middle}
 .mname{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-soft)}
@@ -145,7 +180,8 @@ h1 .dot{color:var(--gold)}
 
 /* ----- RIGHT: workflow panels ----- */
 .panels{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.wp{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:16px 17px 17px;align-self:start}
+.wp{background:var(--bg-2);border:1px solid var(--line);border-radius:4px;padding:16px 17px 17px;align-self:start}
+html[data-theme="dark"] .wp{background:var(--bg)}
 .wp-h{display:flex;align-items:center;gap:12px;cursor:pointer}
 .wp-h .name{font-family:"Fraunces",serif;font-weight:600;font-size:18px}
 .wp-h .metric{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
@@ -1600,41 +1636,53 @@ WF.forEach(w=>{
 /* ---------- left ranking ---------- */
 const maxTotal = Math.max(...DATA.scores.agent_ranking.map(a=>a.total));
 const rankEl = document.getElementById('rank');
+const WF_KEY = {Trading:'trade',Hedging:'hedge','Market Insights':'insight',Auditing:'audit'};
+const WF_LABEL = {Trading:'Trade',Hedging:'Hedge','Market Insights':'Insight',Auditing:'Audit'};
 DATA.scores.agent_ranking.forEach((a,i)=>{
   const wf = a.workflow;
-  const sparkMax = Math.max(...WF.map(w=>wf[w]));
-  const spark = WF.map(w=>`<i style="width:${10+ (wf[w]/100)*34}px;opacity:${.35+ (wf[w]/sparkMax)*.6}"></i>`).join('');
-  const mini = WF.map(w=>`<span>${w==='Market Insights'?'Insight':w} <b class="num">${wf[w].toFixed(0)}</b></span>`).join('');
+  const minis = WF.map(w=>`<div class="wfm wf-${WF_KEY[w]}">
+      <span class="pie" data-p="${wf[w]}" style="--p:${wf[w]}"></span>
+      <span class="meta"><span class="lab">${WF_LABEL[w]}</span><span class="val">${wf[w].toFixed(0)}</span></span>
+    </div>`).join('');
+  const medals=['','rk-medal','rk-medal rk2','rk-medal rk3'];
+  const rkInner = i<3 ? `<span class="${medals[i+1]}">${i===0?'★':(i+1)}</span>` : (i+1);
   const div=document.createElement('div');
-  div.className='agent rv'+(i===0?' open':'');div.style.animationDelay=(300+i*80)+'ms';
+  div.className='agent rv'+(i===0?' open champ':'');div.style.animationDelay=(300+i*80)+'ms';
   div.dataset.agent=a.agent;
   div.innerHTML=`
     <div class="agent-top">
-      <span class="logo">${LOGOS[a.agent]||''}</span>
-      <div class="rk">${i+1}</div>
+      <div class="rk">${rkInner}</div>
       <div>
-        <div class="aname"><span class="chev">▶</span>${a.agent}</div>
-        <div class="spark">${spark}</div>
+        <div class="aname"><span class="chev">▶</span><span class="logo">${LOGOS[a.agent]||''}</span>${a.agent}</div>
       </div>
       <div class="score-cell">
-        <div class="v num">${a.total.toFixed(1)}</div>
-        <div class="track"><div class="fill" data-w="${(a.total/maxTotal)*100}"></div></div>
+        <div class="v num" data-score="${a.total}">${a.total.toFixed(1)}</div>
+        <div class="track"><div class="fill" data-w="${(a.total/maxTotal)*100}" style="width:${(a.total/maxTotal)*100}%"></div></div>
       </div>
     </div>
-    <div class="wf-mini">${mini}</div>
+    <div class="wf-mini">${minis}</div>
     <div class="models">${
       DATA.meta.models.map(m=>{
         const idx=cfgIndex(a.agent,m);const tot=DATA.scores.config_total[idx];const f=FAM[m];
+        const miniPies = WF.map(w=>{
+          const v=DATA.scores.workflow[w][idx];
+          return `<span class="pie wf-${WF_KEY[w]}" data-p="${v}" style="--p:${v}" title="${w}: ${v.toFixed(0)}"></span>`;
+        }).join('');
         return `<div class="mrow" data-cfg="${idx}">
           <span class="logo">${LOGOS[a.agent]||''}</span>
           <span class="mname"><span class="mdot dot-${f.key}"></span>${MODEL_LABEL[m]} <span class="fam">${f.label}</span></span>
-          <span class="mvals"><span class="mscore num">${tot.toFixed(1)}</span><span class="mrank">rank ${cfgRank[idx]}/20</span></span>
+          <span class="pies-mini">${miniPies}</span>
+          <span class="mvals"><span class="mscore num" data-score="${tot}">${tot.toFixed(1)}</span><span class="mrank">rank ${cfgRank[idx]}/20</span></span>
         </div>`;
       }).join('')
     }</div>`;
   rankEl.appendChild(div);
 
-  div.querySelector('.agent-top').addEventListener('click',()=>div.classList.toggle('open'));
+  div.querySelector('.agent-top').addEventListener('click',()=>{
+    const wasOpen=div.classList.contains('open');
+    div.classList.toggle('open');
+    if(!wasOpen) growPies(div); // only animate on opening
+  });
   div.addEventListener('mouseenter',()=>highlight({agent:a.agent}));
   div.addEventListener('mouseleave',clearHi);
   div.querySelectorAll('.mrow').forEach(mr=>{
@@ -1782,6 +1830,48 @@ tt.addEventListener('click',e=>{
   document.documentElement.setAttribute('data-theme',b.dataset.t);
   tt.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
 });
+
+/* ---------- pies: grow from 0 on click (and once for the default-open champion) ---------- */
+function growPies(agentEl){
+  const PIE_RATE   = 1500; // time for a 100% pie to fill
+  const SCORE_RATE = 600;  // time for a 100% total bar / count-up
+
+  const pies=agentEl.querySelectorAll('.pie');
+  const fill=agentEl.querySelector('.fill');
+  const numbers=[...agentEl.querySelectorAll('[data-score]')]; // total + each model score
+
+  // Snap everything to 0 with no transition, force reflow, then play.
+  pies.forEach(p=>{p.style.transition='none';p.style.setProperty('--p',0);});
+  if(fill){fill.style.transition='none';fill.style.width='0%';}
+  numbers.forEach(el=>{if(el._raf)cancelAnimationFrame(el._raf);el.textContent='0.0';});
+  void agentEl.offsetWidth;
+
+  requestAnimationFrame(()=>{
+    pies.forEach(p=>{
+      const target=+p.dataset.p;
+      const dur=Math.max(60,(target/100)*PIE_RATE);
+      p.style.transition=`--p ${dur}ms linear`;
+      p.style.setProperty('--p',target);
+    });
+    if(fill){
+      const target=+fill.dataset.w;
+      const dur=Math.max(60,(target/100)*SCORE_RATE);
+      fill.style.transition=`width ${dur}ms linear`;
+      fill.style.width=target+'%';
+    }
+    numbers.forEach(el=>{
+      const target=parseFloat(el.dataset.score);
+      const dur=Math.max(60,(target/100)*SCORE_RATE);
+      const t0=performance.now();
+      const tick=now=>{
+        const t=Math.min(1,(now-t0)/dur);
+        el.textContent=(target*t).toFixed(1);
+        if(t<1) el._raf=requestAnimationFrame(tick);
+      };
+      el._raf=requestAnimationFrame(tick);
+    });
+  });
+}
 
 /* ---------- animate bar widths after paint ---------- */
 requestAnimationFrame(()=>requestAnimationFrame(()=>{
