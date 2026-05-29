@@ -58,27 +58,33 @@ header{padding:38px 0 14px;position:relative}
 .meander{height:18px;margin:4px 0;opacity:.5;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='18'%3E%3Cg fill='none' stroke='%23b8ab92' stroke-width='1.5'%3E%3Cpath d='M0 16H30'/%3E%3Cpath d='M7 16V5H23V13H13V9'/%3E%3C/g%3E%3C/svg%3E") repeat-x left center}
 
-/* Sisyphus — a little pixel figure forever pushing a boulder across the divider */
-.scene{position:relative;height:30px;margin:2px 0 5px;overflow:hidden}
-.scene::after{content:'';position:absolute;left:0;right:0;bottom:6px;height:1px;
-  background:repeating-linear-gradient(90deg, color-mix(in srgb, var(--ink-soft) 30%, transparent) 0 10px, transparent 10px 14px);
-  animation:ground 2s linear infinite}
-.scene.rev::after{animation:groundrev 2s linear infinite}
-.scene:hover .sisyphus,.scene:hover::after{animation-play-state:paused}
-.sisyphus{position:absolute;bottom:6px;left:-7%;color:var(--ink-soft);opacity:.85;
-  animation:walk 18s linear infinite;will-change:left}
-.scene.rev .sisyphus{transform:scaleX(-1);animation:walkrev 18s linear infinite}
-.px{display:block;image-rendering:pixelated;overflow:visible}
-.dudeScale{transform-box:fill-box;transform-origin:bottom center;transform:scale(1.2)}
-.dude{transform-box:fill-box;transform-origin:bottom center;animation:bob .84s steps(2) alternate infinite}
-.rock{transform-box:fill-box;transform-origin:center;animation:roll 2.1s linear infinite}
-@keyframes walk{from{left:-7%}to{left:105%}}
-@keyframes walkrev{from{left:105%}to{left:-7%}}
-@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-2px)}}
-@keyframes roll{to{transform:rotate(360deg)}}
-@keyframes ground{from{background-position-x:0}to{background-position-x:-14px}}
-@keyframes groundrev{from{background-position-x:0}to{background-position-x:14px}}
-@media(prefers-reduced-motion:reduce){.sisyphus,.dude,.rock,.scene::after{animation:none}}
+/* Hercules — a pixel hero meets the Nemean lion and dons its skin (top); the lion-skin hero walks on (bottom) */
+.scene{position:relative;height:34px;margin:4px 0 6px;overflow:hidden}
+.scene::after{content:'';position:absolute;left:0;right:0;bottom:7px;height:1px;
+  background:repeating-linear-gradient(90deg, color-mix(in srgb,var(--ink-soft) 28%,transparent) 0 10px, transparent 10px 14px);
+  animation:hgrnd 1.1s linear infinite}
+.scene.rev::after{animation:hgrndrev .23s linear infinite}
+.scene.js-ground::after{animation:none;background-position-x:var(--gx,0)}
+@keyframes hgrnd{to{background-position-x:-14px}}
+@keyframes hgrndrev{to{background-position-x:14px}}
+.scene .walker{position:absolute;bottom:8px;width:18px;height:24px;z-index:2;color:var(--ink-soft)}
+.scene .walker svg{position:absolute;left:0;bottom:0;height:24px;width:auto;image-rendering:pixelated}
+.scene .walker .acc{fill:var(--gold)}
+.scene .hero{position:absolute;left:0;bottom:0;width:18px;height:24px}
+.scene .hero.skin{display:none}
+.scene .fr{opacity:0;position:absolute;left:0;bottom:0}
+.scene .fr.a{opacity:1}
+.scene .lion{position:absolute;bottom:8px;font-size:17px;line-height:1;z-index:1}
+.scene.press .lion{z-index:3}
+.scene .li{display:inline-block;animation:liorise .34s steps(2) alternate infinite}
+.scene .flash{position:absolute;bottom:8px;width:26px;height:26px;border-radius:50%;opacity:0;
+  pointer-events:none;margin-left:-4px;z-index:4;mix-blend-mode:screen;
+  background:radial-gradient(circle,#fff 0%,#FFE9A8 35%,rgba(255,220,120,0) 70%)}
+/* bottom strip: lone lion-skin hero walking right→left */
+.scene.solo .walker{transform:scaleX(-1)}
+.scene.solo .hero.skin{display:block}
+@keyframes liorise{to{transform:translateY(-2px)}}
+@media(prefers-reduced-motion:reduce){.scene .li,.scene::after{animation:none}}
 .kicker{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;
   font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.34em;
   text-transform:uppercase;color:var(--gold);margin-bottom:14px}
@@ -322,32 +328,7 @@ footer b{color:var(--ink-soft);font-weight:500}
     </div>
   </header>
 
-  <div class="scene" title="Sisyphus — the eternal push">
-    <span class="sisyphus">
-      <svg class="px" viewBox="0 0 48 20" width="48" height="20" aria-hidden="true">
-        <g class="dudeScale"><g class="dude" fill="currentColor">
-          <rect x="13" y="3" width="4" height="4"/>
-          <rect x="11" y="7" width="5" height="2"/>
-          <rect x="10" y="9" width="5" height="2"/>
-          <rect x="9" y="11" width="5" height="2"/>
-          <rect x="16" y="8" width="9" height="2"/>
-          <rect x="13" y="13" width="2" height="6"/>
-          <rect x="13" y="19" width="4" height="1"/>
-          <rect x="9" y="13" width="2" height="3"/>
-          <rect x="7" y="16" width="2" height="3"/>
-          <rect x="5" y="19" width="3" height="1"/>
-        </g></g>
-        <g class="rock" fill="currentColor">
-          <rect x="30" y="0" width="12" height="3"/>
-          <rect x="28" y="3" width="16" height="14"/>
-          <rect x="26" y="6" width="2" height="8"/>
-          <rect x="44" y="6" width="2" height="8"/>
-          <rect x="30" y="17" width="12" height="3"/>
-          <rect x="32" y="7" width="5" height="5" fill="var(--panel)"/>
-        </g>
-      </svg>
-    </span>
-  </div>
+  <div class="scene press js-ground" id="herc-top" aria-hidden="true"></div>
 
   <div class="cols">
     <!-- LEFT -->
@@ -380,32 +361,7 @@ footer b{color:var(--ink-soft);font-weight:500}
     </div>
   </div>
 
-  <div class="scene rev" title="Sisyphus — the eternal push">
-    <span class="sisyphus">
-      <svg class="px" viewBox="0 0 48 20" width="48" height="20" aria-hidden="true">
-        <g class="dudeScale"><g class="dude" fill="currentColor">
-          <rect x="13" y="3" width="4" height="4"/>
-          <rect x="11" y="7" width="5" height="2"/>
-          <rect x="10" y="9" width="5" height="2"/>
-          <rect x="9" y="11" width="5" height="2"/>
-          <rect x="16" y="8" width="9" height="2"/>
-          <rect x="13" y="13" width="2" height="6"/>
-          <rect x="13" y="19" width="4" height="1"/>
-          <rect x="9" y="13" width="2" height="3"/>
-          <rect x="7" y="16" width="2" height="3"/>
-          <rect x="5" y="19" width="3" height="1"/>
-        </g></g>
-        <g class="rock" fill="currentColor">
-          <rect x="30" y="0" width="12" height="3"/>
-          <rect x="28" y="3" width="16" height="14"/>
-          <rect x="26" y="6" width="2" height="8"/>
-          <rect x="44" y="6" width="2" height="8"/>
-          <rect x="30" y="17" width="12" height="3"/>
-          <rect x="32" y="7" width="5" height="5" fill="var(--panel)"/>
-        </g>
-      </svg>
-    </span>
-  </div>
+  <div class="scene rev solo" id="herc-bot" aria-hidden="true"></div>
 
   <footer>
     <b>HERCULEAN</b> · five agent frameworks (ReAct, Claude Code, Codex, Hermes, OpenClaw) on four backbones
@@ -1879,5 +1835,112 @@ requestAnimationFrame(()=>requestAnimationFrame(()=>{
   document.querySelectorAll('.wp').forEach(p=>playBars(p.querySelectorAll('.bars-primary .tk-bar i')));
 }));
 </script>
+
+<script>
+/* ---------- Hercules pixel scenes (top: encounter+transform · bottom: lion-skin hero walking) ---------- */
+(function(){
+  const SPR={
+    HA:"<svg viewBox=\"0 0 18 18\" shape-rendering=\"crispEdges\" fill=\"currentColor\"><rect x=\"7\" y=\"1\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"1\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"1\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"2\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"2\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"2\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"2\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"15\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"16\" y=\"2\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"14\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"15\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"13\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"14\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"4\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"5\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"12\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"4\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"11\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"10\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"10\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"11\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"11\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"12\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"12\" width=\"1\" height=\"1\"/><rect x=\"4\" y=\"13\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"13\" width=\"1\" height=\"1\"/><rect x=\"3\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"2\" y=\"15\" width=\"1\" height=\"1\"/><rect x=\"3\" y=\"15\" width=\"1\" height=\"1\"/></svg>",
+    HB:"<svg viewBox=\"0 0 18 18\" shape-rendering=\"crispEdges\" fill=\"currentColor\"><rect x=\"7\" y=\"2\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"2\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"2\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"15\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"16\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"14\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"15\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"5\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"13\" y=\"5\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"14\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"4\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"12\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"4\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"7\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"11\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"10\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"10\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"11\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"11\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"12\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"12\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"13\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"13\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"15\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"15\" width=\"1\" height=\"1\"/></svg>",
+    SA:"<svg viewBox=\"0 0 18 18\" shape-rendering=\"crispEdges\" fill=\"currentColor\"><rect class=\"acc\" x=\"6\" y=\"0\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"7\" y=\"0\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"8\" y=\"0\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"5\" y=\"1\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"6\" y=\"1\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"7\" y=\"1\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"8\" y=\"1\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"9\" y=\"1\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"4\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"5\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"6\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"7\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"8\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"9\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"4\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"5\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"3\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"9\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"14\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"15\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"4\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"13\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"14\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"4\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"5\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"5\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"12\" y=\"5\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"13\" y=\"5\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"4\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"5\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"6\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"7\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"8\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"9\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"12\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"13\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"4\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"7\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"7\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"11\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"10\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"10\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"11\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"11\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"12\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"12\" width=\"1\" height=\"1\"/><rect x=\"4\" y=\"13\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"13\" width=\"1\" height=\"1\"/><rect x=\"3\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"2\" y=\"15\" width=\"1\" height=\"1\"/><rect x=\"3\" y=\"15\" width=\"1\" height=\"1\"/></svg>",
+    SB:"<svg viewBox=\"0 0 18 18\" shape-rendering=\"crispEdges\" fill=\"currentColor\"><rect class=\"acc\" x=\"6\" y=\"1\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"7\" y=\"1\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"8\" y=\"1\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"5\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"6\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"7\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"8\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"9\" y=\"2\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"4\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"5\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"6\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"7\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"8\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"9\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"3\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"4\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"5\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"4\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"9\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"14\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"15\" y=\"4\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"4\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"5\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"5\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"5\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"13\" y=\"5\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"14\" y=\"5\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"4\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"6\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"12\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"13\" y=\"6\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"4\" y=\"7\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"5\" y=\"7\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"6\" y=\"7\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"7\" y=\"7\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"8\" y=\"7\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"9\" y=\"7\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"7\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"12\" y=\"7\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"13\" y=\"7\" width=\"1\" height=\"1\"/><rect x=\"4\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"8\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"10\" y=\"8\" width=\"1\" height=\"1\"/><rect class=\"acc\" x=\"11\" y=\"8\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"9\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"10\" width=\"1\" height=\"1\"/><rect x=\"8\" y=\"10\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"11\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"11\" width=\"1\" height=\"1\"/><rect x=\"7\" y=\"12\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"12\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"13\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"13\" width=\"1\" height=\"1\"/><rect x=\"5\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"6\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"14\" width=\"1\" height=\"1\"/><rect x=\"9\" y=\"15\" width=\"1\" height=\"1\"/><rect x=\"10\" y=\"15\" width=\"1\" height=\"1\"/></svg>"
+  };
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- TOP: full story ----
+  (function(){
+    const scene=document.getElementById('herc-top'); if(!scene) return;
+    scene.innerHTML =
+      '<span class="lion"><span class="li">\uD83E\uDD81</span></span>'+
+      '<span class="flash"></span>'+
+      '<span class="walker">'+
+        '<span class="hero plain"><span class="fr a">'+SPR.HA+'</span><span class="fr b">'+SPR.HB+'</span></span>'+
+        '<span class="hero skin"><span class="fr a">'+SPR.SA+'</span><span class="fr b">'+SPR.SB+'</span></span>'+
+      '</span>';
+    const walker=scene.querySelector('.walker'), lion=scene.querySelector('.lion'),
+          plain=scene.querySelector('.hero.plain'), skin=scene.querySelector('.hero.skin'),
+          flash=scene.querySelector('.flash'),
+          fA=[...scene.querySelectorAll('.hero .fr.a')], fB=[...scene.querySelectorAll('.hero .fr.b')];
+    // The ground scrolls left at WORLD px/s; the lion is "pinned" to that ground, so it drifts in
+    // from the far right at the EXACT same speed (no foot-slip, any window width). The hero walks in
+    // at his own pace, waits, they collide & bounce, the lion vanishes in a flash, the hero dons the skin.
+    const WORLD=60;                 // px/s — shared by ground + lion (slow, steady)
+    const HERO_PXS=150;             // hero walk speed (px/s), walking right the whole time
+    const HERO_START=-22;           // hero off-left (px)
+    const BOUNCE=1.5, MERGE_GAP=0.3, WALKOFF=3.6; // phase durations after contact (s)
+    if(reduce){ walker.style.left='50%'; lion.style.opacity=0; skin.style.display='block'; plain.style.display='none'; return; }
+
+    let t0=null,phase=0,lastLeg=0;
+    function frame(ts){
+      if(t0===null)t0=ts;
+      const W=scene.clientWidth||1000;
+      const elapsed=(ts-t0)/1000;
+      scene.style.setProperty('--gx', (-((WORLD*elapsed)%14))+'px');
+      // hero walks right at HERO_PXS, lion drifts left at WORLD — they close the gap until they touch.
+      // Solve contact time: HERO_START + HERO_PXS*t + 16  ==  (W+22) - WORLD*t   (hero right side meets lion left)
+      const startPx=W+22;
+      const tContact=Math.max(0,(startPx-16-HERO_START)/(HERO_PXS+WORLD));
+      const contactHeroPx=HERO_START+HERO_PXS*tContact;     // hero x at contact
+      const contactLionPx=contactHeroPx+16;                 // lion sits just past hero's right
+      const tBounceEnd=tContact+BOUNCE, tFlash=tContact+BOUNCE-0.05, tMerge=tBounceEnd+MERGE_GAP, tEnd=tMerge+WALKOFF;
+      const t=elapsed%tEnd;
+
+      // ---- lion (pinned to ground: drifts left at WORLD px/s until contact) ----
+      let lionPx;
+      if(t<tContact){ lionPx=startPx-WORLD*t; }
+      else if(t<tBounceEnd){ const k=(t-tContact)/BOUNCE; lionPx=contactLionPx + 9*Math.sin(k*Math.PI*3)*(1-k); }
+      else lionPx=contactLionPx;
+      lion.style.left=lionPx+'px';
+
+      // ---- hero: walks right continuously until contact, bounces, then strides off ----
+      let heroPx;
+      if(t<tContact) heroPx=HERO_START+HERO_PXS*t;
+      else if(t<tBounceEnd){ const k=(t-tContact)/BOUNCE; heroPx=contactHeroPx - 22*Math.sin(k*Math.PI*3)*(1-k); }
+      else if(t<tMerge) heroPx=contactHeroPx;
+      else heroPx=contactHeroPx + HERO_PXS*1.6*(t-tMerge);
+      walker.style.left=heroPx+'px';
+
+      // legs march except during the locked collision window
+      const walking=t<tContact||t>=tMerge;
+      if(walking && ts-lastLeg>240){phase^=1;lastLeg=ts;
+        fA.forEach(e=>e.style.opacity=phase?0:1); fB.forEach(e=>e.style.opacity=phase?1:0);}
+
+      // transform: lion fades out over the merge gap, hero swaps to the lion-skin sprite
+      const merging=t>=tMerge;
+      skin.style.display=merging?'block':'none'; plain.style.display=merging?'none':'block';
+      if(t>=tBounceEnd&&t<tMerge){const u=(t-tBounceEnd)/MERGE_GAP; lion.style.opacity=1-u; lion.style.transform='scale('+(1-0.6*u)+')';}
+      else if(t>=tMerge){lion.style.opacity=0;}
+      else{lion.style.opacity=1; lion.style.transform='scale(1)';}
+      // flash at the moment of transformation
+      if(t>=tFlash-0.15&&t<tMerge+0.25){const d=Math.abs(t-(tFlash+0.05));
+        flash.style.opacity=Math.max(0,1-d/0.22); flash.style.left=(contactLionPx)+'px';}
+      else flash.style.opacity=0;
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+
+  // ---- BOTTOM: lone lion-skin hero walking right -> left ----
+  (function(){
+    const scene=document.getElementById('herc-bot'); if(!scene) return;
+    scene.innerHTML='<span class="walker"><span class="hero skin"><span class="fr a">'+SPR.SA+'</span><span class="fr b">'+SPR.SB+'</span></span></span>';
+    const walker=scene.querySelector('.walker');
+    const fA=scene.querySelector('.fr.a'), fB=scene.querySelector('.fr.b');
+    if(reduce){ walker.style.left='50%'; return; }
+    const DUR=16000; // ms to cross right->left
+    let t0=null,phase=0,lastLeg=0;
+    function frame(ts){
+      if(t0===null)t0=ts;
+      const p=((ts-t0)%DUR)/DUR;        // 0..1
+      walker.style.left=(110-(110-(-16))*p)+'%';  // 110% -> -16%
+      if(ts-lastLeg>240){phase^=1;lastLeg=ts;
+        fA.style.opacity=phase?0:1; fB.style.opacity=phase?1:0;}
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+})();
+</script>
+
 </body>
 </html>
